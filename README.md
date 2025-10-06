@@ -13,3 +13,8 @@ Technologie:
 EF, migrations
 MSSQL
 
+Pracnost per projekt:
+1)MVC: 40h
+2)API: 30h
+3)Scraper: 4h + (2h per site)
+
