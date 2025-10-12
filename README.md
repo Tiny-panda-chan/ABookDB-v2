@@ -1,20 +1,12 @@
 # ABookDB-v2
 
-Projekty:
-1) MVC pro UI, překlad dat do view modelů
-  -pro zobrazování/editaci/přidávání pomocí view modelů (validace, security), při editaci/přidávání se to přeoží do db modelů a pošle na API pro zípis s bootstrapem, bude se starat o část authentikace/authorizace
-2) API pro práci s daty + auth
-  -konečně bych rád zprovoznil JWT bearer token, aby se kdyžtak MVC nemuselo ani ptát api na authentikaci/authorizaci, jinak basic CRUD API. 
-3) Web scraper
-  -htmlagilitypack pro získání dat, velká změna od toho co už jste viděli to nebude
 
-Technologie: 
-.NET core (MVC, API)
-EF, migrations
-MSSQL
+Popis projektů:
+<img width="930" height="363" alt="image" src="https://github.com/user-attachments/assets/3f015118-0c2a-47db-93fa-2e1a1906058e" />
 
-Pracnost per projekt:
-1)MVC: 40h
-2)API: 30h
-3)Scraper: 4h + (2h per site)
+DB diagram:
+<img width="650" height="419" alt="image" src="https://github.com/user-attachments/assets/20af0b1e-9214-47c4-bcd5-881300978389" />
+
+Rozpis views:
+<img width="536" height="199" alt="image" src="https://github.com/user-attachments/assets/6d316a62-95d0-4b38-8e87-dd9916b6ff89" />
 
