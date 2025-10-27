@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebProject", "WebProject\WebProject.csproj", "{A890537D-7FCC-405E-AEC4-1DE8DC9501E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{49FC3BD2-5FC2-45CA-940A-85889E16B219}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBService", "DBService\DBService.csproj", "{CBD8E133-352F-4CE8-9B62-4763F1F49E3B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A890537D-7FCC-405E-AEC4-1DE8DC9501E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A890537D-7FCC-405E-AEC4-1DE8DC9501E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A890537D-7FCC-405E-AEC4-1DE8DC9501E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A890537D-7FCC-405E-AEC4-1DE8DC9501E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49FC3BD2-5FC2-45CA-940A-85889E16B219}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49FC3BD2-5FC2-45CA-940A-85889E16B219}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49FC3BD2-5FC2-45CA-940A-85889E16B219}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49FC3BD2-5FC2-45CA-940A-85889E16B219}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBD8E133-352F-4CE8-9B62-4763F1F49E3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBD8E133-352F-4CE8-9B62-4763F1F49E3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBD8E133-352F-4CE8-9B62-4763F1F49E3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBD8E133-352F-4CE8-9B62-4763F1F49E3B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4ECC0322-C973-4353-B6E2-6EE2E501CE05}
+	EndGlobalSection
+EndGlobal
