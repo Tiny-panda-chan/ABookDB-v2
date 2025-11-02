@@ -1,3 +1,5 @@
+using DBService;
+using Microsoft.EntityFrameworkCore;
 namespace WebProject
 {
     public class Program
@@ -6,6 +8,8 @@ namespace WebProject
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddDbContext<ABookDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefConStr"),
+                x => x.MigrationsAssembly("DBService")));
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
