@@ -1,5 +1,9 @@
 using DBService;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.UserSecrets;
+using Models.Models;
+using WebProject.ModelTranslator;
+using WebProject.ViewModels;
 namespace WebProject
 {
     public class Program
@@ -12,6 +16,15 @@ namespace WebProject
                 x => x.MigrationsAssembly("DBService")));
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<IModelTranslator, ModelTranslator.ModelTranslator>();
+            builder.Services.AddAutoMapper(configuration =>
+            {
+                configuration.CreateMap<BookModel, DetailVM>();
+            });
+
+
+
 
             var app = builder.Build();
 

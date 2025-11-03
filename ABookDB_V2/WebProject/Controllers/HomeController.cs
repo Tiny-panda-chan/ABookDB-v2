@@ -3,19 +3,21 @@ using System.Diagnostics;
 using WebProject.Models;
 using DBService;
 using DBService.Repositories;
+using WebProject.ModelTranslator;
+using WebProject.ViewModels;
+using AutoMapper;
 
 namespace WebProject.Controllers
 {
-    public class HomeController(ABookDBContext context, ILogger<HomeController> logger) : Controller
+    public class HomeController(IModelTranslator _translator/*, IMapper _mapper*/) : Controller
     {
 
         public IActionResult Index()
         {
-            BookRepository br = new BookRepository(context);
-            var bk = br.GetByIdAsync(1).Result;
-            var books = br.GetAllAsync().Result;
-            var cats = br.GetAllCategoriesAsync(books.FirstOrDefault()).Result;
-            var categories = new CategoryRepository(context).GetAllAsync().Result;
+            var bla = _translator.FillObject(new ViewModels.IndexVM());
+            var blbalb = _translator.FillObject(new ViewModels.DetailVM(4));
+
+            //IndexVM ivm = _mapper.Map<IndexVM>(_translator.);
             return View();
         }
 
