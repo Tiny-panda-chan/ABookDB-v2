@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Models.Models
 {
-    public class FileModel
+    public class FileModel : RepositoryEntity
     {
         [Key]
         public int Id { get; set; }

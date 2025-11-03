@@ -1,20 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WebProject.Models;
+using DBService;
+using DBService.Repositories;
 
 namespace WebProject.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(ABookDBContext context, ILogger<HomeController> logger) : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
 
         public IActionResult Index()
         {
+            BookRepository br = new BookRepository(context);
+            var bk = br.GetByIdAsync(1).Result;
+            var books = br.GetAllAsync().Result;
+            var cats = br.GetAllCategoriesAsync(books.FirstOrDefault()).Result;
+            var categories = new CategoryRepository(context).GetAllAsync().Result;
             return View();
         }
 

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DBService.Repositories
 {
-    internal class CategoryRepository : Repository<CategoryModel>, Models.Interfaces.ICategoryRepository
+    public class CategoryRepository : Repository<CategoryModel>, Models.Interfaces.ICategoryRepository
     {
         private readonly ABookDBContext _context;
         public CategoryRepository(ABookDBContext context) : base(context)
@@ -17,14 +17,14 @@ namespace DBService.Repositories
             _context = context;
         }
 
-        public Task<CategoryModel?> GetByIdAsync(int id)
-        {
-            return _context.Categories.SingleOrDefaultAsync(book => book.Id == id);
-        }
-
         public async Task<IEnumerable<CategoryModel>> GetAllAsync()
         {
             return await _context.Categories.ToListAsync();
+        }
+
+        public async Task<IEnumerable<BookModel>> GetAllBooksInCategory(CategoryModel model)
+        {
+            return await _context.Books.Include(u => u.Categories).Where(b => b.Categories.Any(c => c == model)).ToListAsync();
         }
     }
 }

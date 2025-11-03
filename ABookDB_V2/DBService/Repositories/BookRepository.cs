@@ -8,7 +8,7 @@ using Models.Models;
 
 namespace DBService.Repositories
 {
-    internal class BookRepository : Repository<BookModel>, Models.Interfaces.IBookRepository
+    public class BookRepository : Repository<BookModel>, Models.Interfaces.IBookRepository
     {
         private readonly ABookDBContext _context;
         public BookRepository(ABookDBContext context) : base(context)
@@ -21,9 +21,28 @@ namespace DBService.Repositories
             return await _context.Books.ToListAsync();
         }
 
-        public Task<BookModel?> GetByIdAsync(int id)
+        public async Task<IEnumerable<CategoryModel>?> GetAllCategoriesAsync(BookModel model)
         {
-            return _context.Books.SingleOrDefaultAsync(book => book.Id == id);
+            await _context.Entry(model).Collection(c => c.Categories).LoadAsync();
+            return model.Categories;
+        }
+
+        public async Task<IEnumerable<FileModel>?> GetAllFilesAsync(BookModel model)
+        {
+            await _context.Entry(model).Collection(c => c.BookFiles).LoadAsync();
+            return model.BookFiles;
+        }
+
+        public async Task<IEnumerable<ReviewModel>?> GetAllReviewsAsync(BookModel model)
+        {
+            await _context.Entry(model).Collection(c => c.Comments).LoadAsync();
+            return model.Comments;
+        }
+
+        public async Task<IEnumerable<UrlModel>?> GetAllUrlsAsync(BookModel model)
+        {
+            await _context.Entry(model).Collection(c => c.Urls).LoadAsync();
+            return model.Urls;
         }
 
 

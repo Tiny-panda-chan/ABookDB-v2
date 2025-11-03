@@ -9,7 +9,7 @@ namespace Models.Interfaces
 {
     public interface IReviewRepository
     {
-        Task<ReviewModel> GetByIdAsync(int id);
+        Task<ReviewModel?> GetByIdAsync(int id);
         Task<IEnumerable<ReviewModel>> GetAllAsync();
         void Add(ReviewModel model);
         void Edit(ReviewModel model);

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Models.Models
 {
-    public class UrlModel
+    public class UrlModel : RepositoryEntity
     {
         [Key]
         public int Id { get; set; }

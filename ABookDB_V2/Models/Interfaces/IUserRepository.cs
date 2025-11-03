@@ -9,11 +9,12 @@ namespace Models.Interfaces
 {
     public interface IUserRepository
     {
-        Task<UserModel> GetByIdAsync(int id);
+        Task<UserModel?> GetByIdAsync(int id);
         Task<IEnumerable<UserModel>> GetAllAsync();
         void Add(UserModel model);
         void Edit(UserModel model);
         void Delete(UserModel model);
-        Task<IEnumerable<BookModel>> GetAllReadBooksAsync(UserModel model);
+        Task<IEnumerable<ReadBooksModel>> GetAllReadBooksAsync(UserModel model);
+        Task<IEnumerable<BookModel>> GetAllBookCreatedByAsync(UserModel model);
     }
 }

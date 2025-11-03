@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Models.Models
 {
-    public class ReadBooksModel
+    public class ReadBooksModel : RepositoryEntity
     {
         [Key]
         public int Id { get; set; }
@@ -15,17 +15,17 @@ namespace Models.Models
         public int Page { get; set; } //last page user read
         public ReadStage ReadStage { get; set; } = ReadStage.NotStarted;
 
-        public void UpdateReadStage()
-        {
-            if (Book.TotalPages <= Page)
-            {
-                ReadStage = ReadStage.Finished;
-            }
-            else
-            {
-                ReadStage = ReadStage.InProgress;
-            }
-        }
+        //public void UpdateReadStage()
+        //{
+        //    if (Book.TotalPages <= Page)
+        //    {
+        //        ReadStage = ReadStage.Finished;
+        //    }
+        //    else
+        //    {
+        //        ReadStage = ReadStage.InProgress;
+        //    }
+        //}
     }
 
 

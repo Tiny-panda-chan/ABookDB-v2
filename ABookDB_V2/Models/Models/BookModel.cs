@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models.Models
 {
-    public class BookModel
+    public class BookModel : RepositoryEntity
     {
         [Key]
         public int Id { get; set; }
@@ -12,6 +12,7 @@ namespace Models.Models
         public string Name { get; set; }
         [StringLength(4000)]
         public string Description { get; set; }
+        public AuthorModel? Author { get; set; }
         public int TotalPages { get; set; }
         public UserModel? CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;

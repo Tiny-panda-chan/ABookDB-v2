@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace DBService.Repositories
 {
-    internal abstract class Repository<TEntity>
-        where TEntity : class
+    public abstract class Repository<TEntity>
+        where TEntity : Models.Models.RepositoryEntity
     {
         protected readonly ABookDBContext _context;
 
@@ -30,6 +30,11 @@ namespace DBService.Repositories
         public void Edit(TEntity entity)
         {
             _context.Update(entity);
+        }
+
+        public async Task<TEntity?> GetByIdAsync(int id)
+        {
+            return await _context.Set<TEntity>().SingleOrDefaultAsync(e => e.Id == id);
         }
     }
 }

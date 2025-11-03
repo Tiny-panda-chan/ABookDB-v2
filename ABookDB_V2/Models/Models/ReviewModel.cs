@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Models.Models
 {
-    public class ReviewModel
+    public class ReviewModel : RepositoryEntity
     {
         [Key]
         public int Id { get; set; }
