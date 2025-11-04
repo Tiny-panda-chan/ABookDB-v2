@@ -20,16 +20,19 @@ namespace DBService.Repositories
         public void Add(TEntity entity)
         {
             _context.Add(entity);
+            _context.SaveChanges();
         }
 
         public void Delete(TEntity entity)
         {
             _context.Remove(entity);
+            _context.SaveChanges();
         }
 
         public void Edit(TEntity entity)
         {
             _context.Update(entity);
+            _context.SaveChanges();
         }
 
         public async Task<TEntity?> GetByIdAsync(int id)

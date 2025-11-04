@@ -17,7 +17,7 @@ namespace WebProject.ModelTranslator
         private UserRepository UserRepository = new UserRepository(_context);
 
 
-
+        //Books
         public async Task<IndexVM> FillObjectAsync(IndexVM obj)
         {
             obj.BookList = (await BookRepository.GetAllAsync()).Select(bl => new BookItem
@@ -50,9 +50,26 @@ namespace WebProject.ModelTranslator
             return obj;
         }
 
-        /*public T FillObject<T>(T obj) where T : class
+        public async Task<CreateVM> FillObjectAsync(CreateVM obj)
         {
-            throw new NotImplementedException();
-        }*/
+            obj.AllCategories = (await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
+            obj.AllAuthors = (await AuthorRepository.GetAllAsync()).Select(c => c.Name).ToList();
+            return obj;
+        }
+
+        public async Task<int> SaveObjectAsync(EditVM obj)
+        {
+            BookModel bk = await BookRepository.GetByIdAsync(obj._id);
+            //return saved object id for redirection
+            return bk.Id;
+        }
+
+        public async Task<int> SaveObjectAsync(CreateVM obj)
+        {
+            BookModel bk = new BookModel();
+            BookRepository.Add(bk);
+            //return saved object id for redirection
+            return bk.Id;
+        }
     }
 }
