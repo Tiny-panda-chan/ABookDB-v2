@@ -1,11 +1,12 @@
 ﻿using DBService.Repositories;
-using WebProject.ViewModels;
+using WebProject.ViewModels.Book;
 
 namespace WebProject.ModelTranslator
 {
     public interface IModelTranslator
     {
-        IndexVM FillObject(IndexVM obj);
-        DetailVM FillObject(DetailVM obj);
+        Task<IndexVM> FillObjectAsync(IndexVM obj);
+        Task<DetailVM> FillObjectAsync(DetailVM obj);
+        Task<EditVM> FillObjectAsync(EditVM obj);
     }
 }

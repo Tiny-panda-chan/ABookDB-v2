@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Models.Models;
 using WebProject.ModelTranslator;
-using WebProject.ViewModels;
+using WebProject.ViewModels.Book;
 namespace WebProject
 {
     public class Program
@@ -21,6 +21,7 @@ namespace WebProject
             builder.Services.AddAutoMapper(configuration =>
             {
                 configuration.CreateMap<BookModel, DetailVM>();
+                configuration.CreateMap<BookModel, EditVM>();
             });
 
 
@@ -45,7 +46,7 @@ namespace WebProject
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Book}/{action=Index}/{id?}");
 
             app.Run();
         }

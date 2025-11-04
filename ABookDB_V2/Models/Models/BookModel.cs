@@ -19,7 +19,7 @@ namespace Models.Models
         public ICollection<CategoryModel>? Categories { get; set; }
         public ICollection<UrlModel>? Urls { get; set; }
         public ICollection<FileModel>? BookFiles { get; set; }
-        public ICollection<ReviewModel>? Comments { get; set; }
+        public ICollection<ReviewModel>? Reviews { get; set; }
 
     }
 }

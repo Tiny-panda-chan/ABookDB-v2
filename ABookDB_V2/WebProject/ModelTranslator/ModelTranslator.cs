@@ -2,7 +2,9 @@
 using DBService.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Models.Models;
-using WebProject.ViewModels;
+using System.Linq;
+using System.Threading.Tasks;
+using WebProject.ViewModels.Book;
 
 namespace WebProject.ModelTranslator
 {
@@ -16,18 +18,35 @@ namespace WebProject.ModelTranslator
 
 
 
-        public IndexVM FillObject(IndexVM obj)
+        public async Task<IndexVM> FillObjectAsync(IndexVM obj)
         {
-            obj.BookList = BookRepository.GetAllAsync().Result.Select(bl => new BookItem { Title = bl.Name, Description = bl.Description }).ToList();
+            obj.BookList = (await BookRepository.GetAllAsync()).Select(bl => new BookItem
+            {
+                Title = bl.Name,
+                Description = bl.Description,
+                BookCategories = BookRepository.GetAllCategoriesAsync(bl).Result.Select(c => c.Name).ToList()
+            }).ToList();
+            obj.Categories = (await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
             return obj;
         }
 
-        public DetailVM FillObject(DetailVM obj)
+        public async Task<DetailVM> FillObjectAsync(DetailVM obj)
         {
-            BookModel bk = BookRepository.GetByIdAsync(obj._id).Result;
+            BookModel bk = await BookRepository.GetByIdAsync(obj._id);
             obj.Name = bk.Name;
-            obj.Categories = BookRepository.GetAllCategoriesAsync(bk).Result.ToList();
+            obj.BookCategories = (await BookRepository.GetAllCategoriesAsync(bk)).Select(bc =>bc.Name).ToList();
             var dvm = _mapper.Map<DetailVM>(bk);
+            return obj;
+        }
+
+        public async Task<EditVM> FillObjectAsync(EditVM obj)
+        {
+            BookModel bk = await BookRepository.GetByIdAsync(obj._id);
+            await BookRepository.GetAllCategoriesAsync(bk);
+            await BookRepository.GetAllFilesAsync(bk);
+            await BookRepository.GetAllUrlsAsync(bk);
+            obj = _mapper.Map<EditVM>(bk);
+
             return obj;
         }
 
