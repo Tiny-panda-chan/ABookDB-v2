@@ -24,8 +24,13 @@ namespace WebProject
                 configuration.CreateMap<BookModel, EditVM>();
             });
 
-
-
+            builder.Services.AddAuthentication().AddCookie("authCookie", o =>
+            {
+                o.LoginPath = "/User/Login";
+                o.AccessDeniedPath = "/User/Naah";
+                o.Cookie.Name = "authCookie";
+            });
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
@@ -42,6 +47,7 @@ namespace WebProject
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

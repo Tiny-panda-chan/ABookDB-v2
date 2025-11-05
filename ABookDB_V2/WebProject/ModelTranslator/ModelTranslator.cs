@@ -5,6 +5,7 @@ using Models.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using WebProject.ViewModels.Book;
+using WebProject.ViewModels.User;
 
 namespace WebProject.ModelTranslator
 {
@@ -20,10 +21,13 @@ namespace WebProject.ModelTranslator
         //Books
         public async Task<IndexVM> FillObjectAsync(IndexVM obj)
         {
-            obj.BookList = (await BookRepository.GetAllAsync()).Select(bl => new BookItem
+            var books = await BookRepository.GetAllAsync();
+            obj.BookList = books.Select(bl => new IndexVM.BookItem
             {
+                Id = bl.Id,
                 Title = bl.Name,
                 Description = bl.Description,
+                //BookCategories = (BookRepository.GetAllCategoriesAsync(bl).Result == null ? new List<string>() : BookRepository.GetAllCategoriesAsync(bl).Result.Select(c => c.Name).ToList() )
                 BookCategories = BookRepository.GetAllCategoriesAsync(bl).Result.Select(c => c.Name).ToList()
             }).ToList();
             obj.Categories = (await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
@@ -55,6 +59,11 @@ namespace WebProject.ModelTranslator
             obj.AllCategories = (await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
             obj.AllAuthors = (await AuthorRepository.GetAllAsync()).Select(c => c.Name).ToList();
             return obj;
+        }
+
+        public Task<ProfileVM> FillObjectAsync(ProfileVM obj)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<int> SaveObjectAsync(EditVM obj)

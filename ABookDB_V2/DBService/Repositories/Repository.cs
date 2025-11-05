@@ -35,6 +35,11 @@ namespace DBService.Repositories
             _context.SaveChanges();
         }
 
+        public bool Exists(int id)
+        {
+            return _context.Set<TEntity>().Any(e => e.Id == id);
+        }
+
         public async Task<TEntity?> GetByIdAsync(int id)
         {
             return await _context.Set<TEntity>().SingleOrDefaultAsync(e => e.Id == id);

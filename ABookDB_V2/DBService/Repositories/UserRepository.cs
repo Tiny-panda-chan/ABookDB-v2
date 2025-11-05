@@ -17,6 +17,11 @@ namespace DBService.Repositories
             _context = context;
         }
 
+        public async Task<UserModel?> GetByEmail(string email)
+        {
+            return await _context.Users.SingleOrDefaultAsync(e => e.Email == email);
+        }
+
         public async Task<IEnumerable<UserModel>> GetAllAsync()
         {
             return await _context.Users.ToListAsync();

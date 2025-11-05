@@ -8,6 +8,7 @@ using WebProject.ViewModels;
 using AutoMapper;
 using System.Threading.Tasks;
 using WebProject.ViewModels.Book;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebProject.Controllers
 {
@@ -30,7 +31,8 @@ namespace WebProject.Controllers
             DetailVM detailVM = new DetailVM(id);
             return View();
         }
-
+        [Authorize]
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             if (id == 0)
@@ -38,22 +40,32 @@ namespace WebProject.Controllers
             return View(await _translator.FillObjectAsync(new EditVM(id)));
         }
 
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditVM editVM)
+        {
+            await _translator.SaveObjectAsync(editVM);
+            return View();
+        }
+
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
             return View(await _translator.FillObjectAsync(new CreateVM()));
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(CreateVM createVM)
         {
             await _translator.SaveObjectAsync(createVM);
             return RedirectToAction();
         }
-
+        /*
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        }*/
     }
 }

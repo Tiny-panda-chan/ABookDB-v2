@@ -25,7 +25,7 @@ namespace DBService.Repositories
         public async Task<IEnumerable<CategoryModel>?> GetAllCategoriesAsync(BookModel model)
         {
             await _context.Entry(model).Collection(c => c.Categories).LoadAsync();
-            if (model.Categories.IsNullOrEmpty())
+            if (model.Categories is null)
                 return new List<CategoryModel>();
             return model.Categories;
         }
@@ -33,7 +33,7 @@ namespace DBService.Repositories
         public async Task<IEnumerable<FileModel>?> GetAllFilesAsync(BookModel model)
         {
             await _context.Entry(model).Collection(c => c.BookFiles).LoadAsync();
-            if (model.BookFiles.IsNullOrEmpty())
+            if (model.BookFiles is null)
                 return new List<FileModel>();
             return model.BookFiles;
         }
@@ -41,7 +41,7 @@ namespace DBService.Repositories
         public async Task<IEnumerable<ReviewModel>?> GetAllReviewsAsync(BookModel model)
         {
             await _context.Entry(model).Collection(c => c.Reviews).LoadAsync();
-            if (model.Reviews.IsNullOrEmpty())
+            if (model.Reviews is null)
                 return new List<ReviewModel>();
             return model.Reviews;
         }
@@ -49,7 +49,7 @@ namespace DBService.Repositories
         public async Task<IEnumerable<UrlModel>?> GetAllUrlsAsync(BookModel model)
         {
             await _context.Entry(model).Collection(c => c.Urls).LoadAsync();
-            if (model.Urls.IsNullOrEmpty())
+            if (model.Urls is null)
                 return new List<UrlModel>();
             return model.Urls;
         }

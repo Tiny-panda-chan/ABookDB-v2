@@ -1,0 +1,107 @@
+﻿@model WebProject.ViewModels.Book.CreateVM
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Create book";
+}
+
+<h1 id="BookNameMirror">@(Model.Name != null ? Model.Name : "---")</h1>
+<hr />
+<div class="container">
+    <form asp-action="BookCreate" enctype="multipart/form-data" id="formdata">
+        <div class="row">
+            <div class="col-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input autofocus autocomplete="off" id="BookName" onkeyup="CopyText()" asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="form-group row">
+                        <div class="col" id="categoryDiv">
+                            <partial name="~/Views/PartialViews/CategoryListPV.cshtml" model="Model" />
+                            @* <label asp-for="Book.Categories" class="control-label"></label>
+                            <select id="cats" asp-for="Cats" class="form-control" asp-items="@(cats)" multiple multiselect-search="true">
+                            </select>
+                            <span asp-validation-for="Book.Categories" class="text-danger"></span>
+                            <input type="button" onclick="$('#AddCategoryModal').modal('show')" class="btn btn-secondary w-100 mt-2" value="Add category"/>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="5">
+                    </textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="TotalPages" class="control-label">Pages</label>
+                    <input asp-for="TotalPages" class="form-control" />
+                    <span asp-validation-for="TotalPages" class="text-danger"></span>
+                </div>
+            </div>
+            @* <div class="col">
+                <div class="form-group">
+                    <label class="control-label">Read to page</label>
+                    <input asp-for="ReadBooks.Page" class="form-control" />
+                    <span asp-validation-for="ReadBooks.Page" class="text-danger"></span>
+                </div>
+            </div> *@
+        </div>
+        <div>
+            <div id="urls">
+                <div id="orderItemsContainer" class="row align-bottom">
+                    <partial name="~/Views/PartialViews/UrlAddPV.cshtml" model="Model" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-1*">
+                <h4>File:</h4>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <input asp-for="UploadedFiles" class="form-control" type="file" accept=".pdf, .epub, .txt" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row p-2">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+<!-- Modal -->
+<partial name="~/Views/PartialViews/AddCategoryModal.cshtml" />
+
+@* <div>
+    <a asp-action="Index">Back to List</a>
+</div> *@
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    @* <script>
+        function CopyText() {
+            var input = document.getElementById('BookName');
+            console.log(input.value.length)
+            var mirror = document.getElementById('BookNameMirror');
+            console.log(mirror.value);
+            mirror.innerText = input.value;
+            if (input.value.length === 0) {
+                mirror.innerText = "Name of the book"
+            }
+        }
+    </script> *@
+}

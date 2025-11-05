@@ -1,5 +1,6 @@
 ﻿using DBService.Repositories;
 using WebProject.ViewModels.Book;
+using WebProject.ViewModels.User;
 
 namespace WebProject.ModelTranslator
 {
@@ -12,5 +13,8 @@ namespace WebProject.ModelTranslator
         Task<CreateVM> FillObjectAsync(CreateVM obj);
         Task<int> SaveObjectAsync(EditVM obj);
         Task<int> SaveObjectAsync(CreateVM obj);
+
+        //User
+        Task<ProfileVM> FillObjectAsync(ProfileVM obj);
     }
 }

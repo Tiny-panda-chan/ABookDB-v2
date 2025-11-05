@@ -5,6 +5,7 @@ namespace WebProject.ViewModels.Book
 {
     public class CreateVM
     {
+
         public string Name { get; set; }
         public string Description { get; set; }
         public AuthorModel? Author { get; set; }

@@ -1,8 +1,137 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using System.Security.Claims
+@model WebProject.ViewModels.Book.IndexVM
+
+@{
+    ViewData["Title"] = "book list";
+    // SelectList searchCats = new SelectList(Model.Categories, "ID", "Name");
+    // foreach (var item in Model.Categories)
+    // {
+    //     if (searchCats.Any(sc => sc.Value == item))
+    //     {
+    //         searchCats.FirstOrDefault(sc => sc.Value == item).Selected = true;
+    //     }
+    // }
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>Index</h1>
+<hr />
+<div class="ps-1">
+    <form asp-action="Index" method="get">
+        <div class="row">
+            <h4>Filters:</h4>
+            <div class="col">
+                <input autofocus autocomplete="off" class="form-text w-100 text-black" id="searchBox" type="text" name="searchStr" value="@ViewData["srch"]" placeholder="Search" />
+            </div>
+            <div class="col-8">
+                <select id="cats" name="categories" class="form-control" asp-items="@(new SelectList(Model.Categories))" multiple multiselect-search="true">
+                </select>
+            </div>
+            <div class="col-auto">
+                <input type="submit" value="Search" class="" />
+            </div>
+        </div>
+    </form>
 </div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BookList[0].Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BookList[0].Description)
+            </th>
+            <th>
+                @Html.DisplayName("Category")
+            </th>
+            @{
+                if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    <th>
+                        Progress
+                    </th>
+                    <th>
+                        Actions
+                    </th>
+                }
+            }
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.BookList)
+        {
+            <tr>
+                <td>
+                    <a asp-controller="Book" asp-action="Detail" asp-route-id="@item.Id.ToString()">
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </a>
+                </td>
+                <td>
+                    <p>@item.Description.Substring(0, item.Description.Length > 70 ? 70 : item.Description.Length)@(item.Description.Length > 70 ? "..." : "")</p>
+                    @* @Html.DisplayFor(modelItem => item.Description.Substring(0, 50)) *@
+                </td>
+                <td>
+                    @{
+                        if (item.BookCategories != null)
+                        {
+                            @string.Join(", ", item.BookCategories)
+                        }
+                    }
+
+                </td>
+
+                @* @{
+                    if (User.Identity?.IsAuthenticated ?? false)
+                    {
+                        <td>
+                            @if (!Model.ReadBooks.Any(rd => rd.Book.ID == item.ID))
+                            {
+                                <input type="button" value="@ReadStage.NotStarted" class="btn-outline-dark" disabled />
+                            }
+                            else
+                            {
+                                switch (@Model.ReadBooks.First(rd => rd.Book.ID == item.ID).ReadStage)
+                                {
+                                    case ReadStage.InProgress:
+                                        <input type="button" value="In progress" class="btn-outline-info" disabled />
+                                        break;
+                                    case ReadStage.Finished:
+                                        <input type="button" value="Finished" class="btn-outline-success" disabled />
+                                        break;
+                                }
+
+                            }
+
+                        </td>
+                        <td>
+                            @if (User.Claims.FirstOrDefault(c => (c.Type == ClaimTypes.NameIdentifier && c.Value == item.CreatedBy.ID.ToString()) || (c.Type == "admin" && c.Value == "true")) != null)
+                            {
+                                <a asp-controller="Books" asp-action="BookEdit" asp-route-id="@item.ID.ToString()">
+                                    Edit
+                                </a>
+                                <a asp-controller="Books" asp-action="BookDelete" asp-route-id="@item.ID.ToString()">
+                                    Delete
+                                </a>
+                            }
+                        </td>
+                    }
+
+                } *@
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+    </script>
+}
