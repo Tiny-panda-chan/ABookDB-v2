@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+    <Folder Include="Websites\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EpubCore" Version="1.6.2" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
+    <PackageReference Include="HtmlAgilityPack.CssSelectors.NetCore" Version="1.2.1" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Models\Models.csproj" />
+	</ItemGroup>
+
+</Project>

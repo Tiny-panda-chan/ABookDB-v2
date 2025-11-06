@@ -12,11 +12,11 @@ namespace WebProject.Helpers
     public class AuthHelper
     {
         [Inject]
-        private ABookDBContext blabal
+        private ABookDBContext _injContext
         {
-            get { return blabal; }
+            get { return _injContext; }
             set {
-                blabal = value;
+                _injContext = value;
                 repo = new(value);
             }
         }
@@ -46,6 +46,21 @@ namespace WebProject.Helpers
             };
             await _httpContext.SignInAsync("authCookie", principal, options);
             return true;
+        }
+
+        public async Task<UserModel> RegisterUserAsync(RegisterVM user)
+        {
+            if (await repo.GetByEmail(user.Email) != null)
+            {
+                return null;
+            }
+            var dbUser = new UserModel();
+            var hashPassword = new PasswordHasher<UserModel>().HashPassword(dbUser, user.Password);
+            dbUser.Password = hashPassword;
+            dbUser.Username = user.Username;
+            dbUser.Email = user.Email;
+            repo.Add(dbUser);
+            return dbUser;
         }
     }
 }
