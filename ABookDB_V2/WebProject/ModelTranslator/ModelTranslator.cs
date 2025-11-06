@@ -5,6 +5,7 @@ using Models.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using WebProject.ViewModels.Book;
+using WebProject.ViewModels.Review;
 using WebProject.ViewModels.User;
 
 namespace WebProject.ModelTranslator
@@ -16,6 +17,7 @@ namespace WebProject.ModelTranslator
         private BookRepository BookRepository = new BookRepository(_context);
         private CategoryRepository CategoryRepository = new CategoryRepository(_context);
         private UserRepository UserRepository = new UserRepository(_context);
+        private ReviewRepository ReviewRepository = new ReviewRepository(_context);
 
 
         //Books
@@ -54,17 +56,14 @@ namespace WebProject.ModelTranslator
             return obj;
         }
 
-        public async Task<CreateVM> FillObjectAsync(CreateVM obj)
+        public async Task<ViewModels.Book.CreateVM> FillObjectAsync(ViewModels.Book.CreateVM obj)
         {
             obj.AllCategories = (await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
             obj.AllAuthors = (await AuthorRepository.GetAllAsync()).Select(c => c.Name).ToList();
             return obj;
         }
 
-        public Task<ProfileVM> FillObjectAsync(ProfileVM obj)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public async Task<int> SaveObjectAsync(EditVM obj)
         {
@@ -73,12 +72,43 @@ namespace WebProject.ModelTranslator
             return bk.Id;
         }
 
-        public async Task<int> SaveObjectAsync(CreateVM obj)
+        public async Task<int> SaveObjectAsync(ViewModels.Book.CreateVM obj)
         {
             BookModel bk = new BookModel();
             BookRepository.Add(bk);
             //return saved object id for redirection
             return bk.Id;
+        }
+
+        //User
+        public Task<ProfileVM> FillObjectAsync(ProfileVM obj)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        //Review
+        public async Task<ListVM> FillObjectAsync(ListVM obj)
+        {
+            BookModel bk = await BookRepository.GetByIdAsync(obj._id);
+            if (bk == null)
+                return null;
+            await BookRepository.GetAllReviewsAsync(bk);
+            if (bk.Reviews == null)
+                return null;
+            obj.ReviewItems = bk.Reviews.Select(c => new ListVM.ReviewItem() { TextContent = c.Text, CreatedBy = c.createdBy.Username, CreatedOn = c.createdOn }).ToList();
+            return obj;
+        }
+
+        public async Task<int> SaveObjectAsync(ViewModels.Review.CreateVM obj)
+        {
+            BookModel bk = await BookRepository.GetByIdAsync(obj.BookId);
+            if (bk == null)
+                return 0;
+            ReviewModel rm = new ReviewModel() { createdOn = DateTime.Now, Text = obj.Text, book = bk };
+
+            ReviewRepository.Add(rm);
+            return rm.Id;
         }
     }
 }

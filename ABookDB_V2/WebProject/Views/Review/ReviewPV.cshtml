@@ -1,0 +1,67 @@
+﻿@using System.Security.Claims
+@model WebProject.ViewModels.Review.ListVM
+@{
+    Layout = "";
+}
+<hr />
+<div class="row">
+    <div class="col justify-content-end">
+        @if (User.Identity?.IsAuthenticated ?? false)
+        {
+            <div class="card w-75 float-end m-1">
+                <div class="card-body">
+                    <div class="form-outline w-100">
+                        <textarea id="commentText" class="form-control" rows="4" placeholder="Write your comment here"></textarea>
+                    </div>
+                    <div class="float-end mt-1">
+                        <button type="button" onclick="AddComment()">Post</button>
+                    </div>
+                </div>
+            </div>
+        }
+
+
+        @{
+            foreach (var comm in Model.ReviewItems)
+            {
+                <div class="card w-75 float-end m-1">
+                    <div class="card-body">
+                        <h6 class="text-primary">@comm.CreatedBy</h6>
+                        <p class="text-muted">@comm.CreatedOn.ToShortDateString()</p>
+                        <div class="form-outline w-100">
+                            <p>@comm.TextContent</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+    </div>
+</div>
+
+<script>
+    function AddComment() {
+        $.ajax({
+            async: true,
+            data: "bookId=" + @Model._id + "&content=" + document.getElementById('commentText').value,
+            type: "POST",
+            url: '/Comment/AddComment',
+            success: function (component) {
+                $('#commentsDiv').html(component);
+            }
+        });
+    }
+
+    function RemoveComment(val) {
+        $.ajax({
+            async: true,
+            data: "commentId=" + val,
+            type: "POST",
+            url: '/Comment/RemoveComment',
+            success: function (component) {
+                $('#commentsDiv').html(component);
+            }
+        });
+    }
+</script>
+

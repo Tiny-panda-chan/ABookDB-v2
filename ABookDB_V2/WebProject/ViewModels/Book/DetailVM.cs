@@ -17,12 +17,12 @@ namespace WebProject.ViewModels.Book
         public List<string> BookCategories { get; set; }
         public List<string> BookFiles { get; set; }
         public List<string> BookUrls { get; set; }
-        public List<ReviewItem> BookReviews { get; set; }
-        public struct ReviewItem
-        {
-            public string Author { get; set; }
-            public string Text { get; set; }
-        }
+        //public List<ReviewItem> BookReviews { get; set; }
+        //public struct ReviewItem
+        //{
+        //    public string Author { get; set; }
+        //    public string Text { get; set; }
+        //}
     }
 
     

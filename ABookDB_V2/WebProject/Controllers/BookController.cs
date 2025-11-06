@@ -29,7 +29,7 @@ namespace WebProject.Controllers
             if (id == 0)
                 throw new NotSupportedException();
             DetailVM detailVM = new DetailVM(id);
-            return View();
+            return View(_translator.FillObjectAsync(detailVM).Result);
         }
         [Authorize]
         [HttpGet]

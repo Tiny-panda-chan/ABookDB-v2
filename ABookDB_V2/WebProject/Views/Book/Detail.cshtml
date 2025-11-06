@@ -1,5 +1,204 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model WebProject.ViewModels.Book.DetailVM
+
 @{
+    ViewData["Title"] = @Model.Name + " detail";
+}
+
+
+
+
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-6 pl-1">
+            <h1>@Html.DisplayFor(model => model.Name)</h1>
+        </div>
+        @{
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                <div class="col-6 align-content-end">
+                    @{
+                        if (ViewBag.ReadToPage != null)
+                        {
+                            if (ViewBag.ReadToPage >= Model.TotalPages)
+                            {
+                                <input type="button" value="Finished" class="btn-outline-success float-end" disabled />
+                            }
+                            else
+                            {
+                                <input type="button" value="In progress" class="btn-outline-info float-end" disabled />
+                            }
+                        }
+                        else
+                        {
+                            <input type="button" value="Add to read books" onclick="$('#ReadToReadModal').modal('show')" class="btn-outline-dark float-end" />
+                        }
+                    }
+                </div>
+            }
+        }
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-4">
+            <div class="row">
+                <p>Added to site on @Model.CreatedDate.Date.ToShortDateString()</p>
+            </div>
+            <div class="row">
+                <p class="col">Total pages: @Model.TotalPages.ToString()</p>
+            </div>
+            @{
+                if (ViewBag.ReadToPage != null)
+                {
+                    <div class="form-group row justify-content-between">
+                        <label class="col">Read to page:</label>
+                        <div class="col">
+                            <input id="updateReadToPage" name="readToPage" value="@ViewBag.ReadToPage" max="@Model.TotalPages" type="number" autocomplete="off" />
+                        </div>
+                        <div class="col">
+                            <button type="button" class="btn col" onclick="UpdateRead()">Update</button>
+                        </div>
+                    </div>
+                }
+            }
+            <div class="row">
+                <p class="m-0">Categories: </p>
+                <div class="justify-content-center">
+                    @foreach (var item in Model.BookCategories)
+                    {
+                        <form asp-action="Index" method="get">
+                            @* <input type="text" name="categories" value="@(new List<string>() { item.ID.ToString() })" hidden /> *@
+                            <input type="submit" value="@item" class="mt-1" />
+                        </form>
+                    }
+                </div>
+                @* @for (int i = 0; i < @Model.Book.Categories; i++)
+                {
+                <a asp-page="/Categories/CategoryDetail" asp-route-Id="Model.Book.Categories[i].ID.ToString()" class="float-end align-content-end">Model.Book.Categories[i].Name</a>
+                } *@
+
+
+            </div>
+        </div>
+
+        <div class="col justify-content-start">
+            <p class="m-0">Synopsis:</p>
+            <p class="bg-light rounded p-2" style="min-height: 10vw">
+                @Model.Description
+            </p>
+        </div>
+    </div>
+
+    <div class="row mx-auto align-content-end justify-content-end">
+
+        @*         <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.Book.Description)
+        </dt> *@
+    </div>
+    <div class="row">
+        <div>
+            @{
+                if (Model.BookUrls?.Count > 0)
+                {
+                    <table class="justify-content-start col-auto">
+                        <tr>
+                            <th>Url</th>
+                            <th>Working</th>
+                        </tr>
+                        @foreach (var item in Model.BookUrls)
+                        {
+
+                            <tr>
+                                <td>
+                                    <a href="@item" target="_blank">@item</a>
+                                </td>
+                                @{
+                                    <td class="p-2">
+                                    </td>
+
+                                }
+                            </tr>
+
+                        }
+                    </table>
+                }
+
+            }
+        </div>
+
+    </div>
+    <div class="row">
+
+        <h4>Downloads:</h4>
+        @{
+            if (Model.BookFiles?.Count == 0)
+            {
+                <p class="alert-danger col-auto">No files uploaded</p>
+            }
+            else
+            {
+                if (!User.Identity?.IsAuthenticated ?? true)
+                {
+                    <p>Log in to view files</p>
+                }
+                else
+                {
+
+                    foreach (var item in Model.BookFiles)
+                    {
+                        <div class="justify-content-start">
+                            <a asp-action="Download" asp-route-bookId="@Model._id" asp-route-fileName="@item">@item</a>
+                        </div>
+                    }
+
+                }
+            }
+
+        }
+    </div>
+    <div id="commentsDiv">
+        @await Component.InvokeAsync("Comment", new { bookId = Model._id })
+    </div>
+
+
+</div>
+<div>
+    @* <a asp-page="./Edit" asp-route-id="@Model.Book.ID">Edit</a> *@
+    @* <a asp-page="./IndexList">Back to List</a> *@
+</div>
+<!-- Modal -->
+@* <partial name="~/Views/PartialViews/ReadBookModal.cshtml" /> *@
+@* @Render("~/Views/PartialViews/ReadBookModal") *@
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function AddToRead() {
+            $.ajax({
+                async: true,
+                data: "bookId=" + @Model._id.ToString() + "&readToPage=" + document.getElementById("readToPage").value,
+                type: "POST",
+                url: '/User/AddOrUpdateReadBook',
+                success: function (res) {
+                    $('#ReadToReadModal').modal('hide');
+                    window.location.reload(true);
+                }
+            });
+        }
+        function UpdateRead() {
+            $.ajax({
+                async: true,
+                data: "bookId=" + @Model._id.ToString() + "&readToPage=" + document.getElementById("updateReadToPage").value,
+                type: "POST",
+                url: '/User/AddOrUpdateReadBook',
+                success: function (res) {
+                    window.location.reload(true);
+                }
+            });
+        }
+    </script>
 }
