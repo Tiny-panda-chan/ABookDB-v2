@@ -1,0 +1,98 @@
+﻿@model WebProject.ViewModels.Book.CreateVM
+@using System.Net;
+@{
+    Layout = "";
+}
+@for (int i = 0; i < Model.Urls?.Count(); i++)
+{
+    <div class="row">
+        <div class="form-group col-8">
+            <label class="control-label">Url @((i + 1).ToString())</label>
+            <input onblur="ValidateUrl(`@i.ToString()`)" id="urlEditor@(i)" asp-for="@Model.Urls[i]" class="form-control" value="@Model.Urls[i]" autocomplete="off" />
+            <span asp-validation-for="@Model.Urls[i]" class="text-danger"></span>
+        </div>
+        <div class="col-4 d-flex align-items-end">
+            <div class="row">
+                @if (i + 1 == Model.Urls.Count())
+                {
+                    <div class="col align-content-end">
+                        <input class="btn btn-secondary" onclick="AddUrl()" type="button" id="btnAdd" value="Add url" />
+                    </div>
+                }
+                else
+                {
+                    <div class="col align-content-end">
+                        <input class="btn btn-secondary" onclick="RemoveUrl(`@i.ToString()`)" type="button" id="btnAdd" value="Remove url" />
+                    </div>
+                }
+                <div class="col-auto" id="fillFromUrl@(i)">
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+<script>
+    function AddUrl() {
+        $.ajax({
+            async: true,
+            data: $('#formdata').serialize(),
+            type: "POST",
+            url: '/Url/AddUrl',
+            success: function (partialView) {
+                console.log("partialView: " + partialView);
+                $('#orderItemsContainer').html(partialView);
+            }
+        });
+    }
+
+    function RemoveUrl(val) {
+        $.ajax({
+            async: true,
+            data: $('#formdata').serialize() + "&indexToRemove=" + val,
+            type: "POST",
+            url: '/Url/RemoveUrl',
+            success: function (partialView) {
+                console.log("partialView: " + partialView);
+                $('#orderItemsContainer').html(partialView);
+            }
+        });
+    }
+
+    function ValidateUrl(val) {
+        console.log("validating url index " + val + " validation value: " + document.getElementById("urlEditor" + val).value + " with id: " + "urlEditor" + val);
+        var toFill = $('#fillFromUrl' + val);
+        $.ajax({
+            async: true,
+            data: "validateUrl=" + document.getElementById("urlEditor" + val).value,
+            type: "POST",
+            url: '/Url/ValidateUrl',
+            success: function (urval) {
+                console.log("success");
+                //toFill.append("<button onclick=\"FetchBookData(\`" + urval + "\`) \">Fetch data from ulr (experimental)</button>");
+                //toFill.append("<form asp-action=\"FetchBookData\" method=\"get\"><input type =\"text\" name=\"url\" value=\"" + urval + "\" hidden /><input type=\"submit\" value=\"Fetch data from ulr(experimental)\" class=\"mt - 1\" /></form >");
+                toFill.append("<a href=\"/Books/FetchBookData?url=" + urval + "\" class=\"btn btn-secondary\">Fetch data from ulr (experimental)</a>");
+            }
+        });
+    }
+
+    function FetchBookData(url) {
+        console.log("fetching");
+        $.ajax({
+            async: true,
+            data: "url=" + url,
+            type: "POST",
+            url: '/Books/FetchBookData',
+            success: function (res) {
+                $('#formdata').html(res);
+                MultiselectDropdown(window.MultiselectDropdownOptions);
+                CopyText();
+                //window.location.reload(true);
+            }
+        });
+
+
+    }
+</script>
+

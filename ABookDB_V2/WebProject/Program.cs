@@ -2,6 +2,7 @@ using DBService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Models.Models;
+using WebProject.Helpers;
 using WebProject.ModelTranslator;
 using WebProject.ViewModels.Book;
 namespace WebProject
@@ -23,6 +24,7 @@ namespace WebProject
                 configuration.CreateMap<BookModel, DetailVM>();
                 configuration.CreateMap<BookModel, EditVM>();
             });
+            builder.Services.AddScoped<IStatusService, StatusService>();
 
             builder.Services.AddAuthentication().AddCookie("authCookie", o =>
             {

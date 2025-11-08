@@ -1,0 +1,40 @@
+﻿@model WebProject.ViewModels.Book.CreateVM
+@{
+    SelectList cats = new SelectList(Model.AllCategories);
+    if (Model != null ? Model.SelectedCategories != null : false)
+    {
+        foreach (var item in cats)
+        {
+            if (Model.AllCategories.Any(c => c == item.Value))
+            {
+                item.Selected = true;
+            }
+        }
+
+    }
+   
+}
+
+<label asp-for="@Model.AllCategories" class="control-label"></label>
+<select id="cats" asp-for="@cats" class="form-control" name="Cats[]" asp-items="@(cats)" multiple multiselect-search="true">
+</select>
+<span asp-validation-for="@Model.AllCategories" class="text-danger"></span>
+<input type="button" onclick="$('#AddCategoryModal').modal('show')" class="btn btn-secondary w-100 mt-2" value="Add category" />
+
+<script>
+    function AddCategory() {
+        console.log($('#catName'));
+        $.ajax({
+            async: true,
+            data: $('#formdata').serialize() + "&slist=" + $('#cats').val() + "&catName=" + document.getElementById("catName").value,
+            type: "POST",
+            url: '/Category/AddCategory',
+            success: function (partialView) {
+                console.log("partialView: " + partialView);
+                $('#categoryDiv').html(partialView);
+                $('#AddCategoryModal').modal('hide');
+                MultiselectDropdown(window.MultiselectDropdownOptions);
+            }
+        });
+    }
+</script>

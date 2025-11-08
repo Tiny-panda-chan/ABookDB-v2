@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using WebProject.ViewModels.User;
 
@@ -11,14 +13,12 @@ namespace WebProject.Helpers
 {
     public class AuthHelper
     {
-        [Inject]
-        private ABookDBContext _injContext
+
+        public AuthHelper(IStatusService status)
         {
-            get { return _injContext; }
-            set {
-                _injContext = value;
-                repo = new(value);
-            }
+            var ctx = status.GetService<ABookDBContext>();
+            repo = new UserRepository(ctx);
+
         }
         private UserRepository repo { get; set; }
         public async Task<bool?> LoginUser(HttpContext _httpContext, LoginVM user)
@@ -34,7 +34,8 @@ namespace WebProject.Helpers
             }
             List<Claim> claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.NameIdentifier, dbUser.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier, dbUser.Id.ToString()),
+                new Claim(ClaimTypes.Name, dbUser.Username)
             };
 
             var identity = new ClaimsIdentity(claims, "authCookie");
@@ -48,7 +49,7 @@ namespace WebProject.Helpers
             return true;
         }
 
-        public async Task<UserModel> RegisterUserAsync(RegisterVM user)
+        public async Task<UserModel> RegisterUserAsync(HttpContext _httpContext, RegisterVM user)
         {
             if (await repo.GetByEmail(user.Email) != null)
             {
@@ -59,7 +60,10 @@ namespace WebProject.Helpers
             dbUser.Password = hashPassword;
             dbUser.Username = user.Username;
             dbUser.Email = user.Email;
+            dbUser.RegistrationDate = DateTime.Now;
             repo.Add(dbUser);
+
+            await LoginUser(_httpContext, new LoginVM() { Email = user.Email, Password = user.Password });
             return dbUser;
         }
     }

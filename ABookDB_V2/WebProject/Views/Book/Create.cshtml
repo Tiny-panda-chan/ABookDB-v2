@@ -21,7 +21,7 @@
                 <div class="form-group">
                     <div class="form-group row">
                         <div class="col" id="categoryDiv">
-                            <partial name="~/Views/PartialViews/CategoryListPV.cshtml" model="Model" />
+                            <partial name="~/Views/Category/ListPV.cshtml" model="Model" />
                             @* <label asp-for="Book.Categories" class="control-label"></label>
                             <select id="cats" asp-for="Cats" class="form-control" asp-items="@(cats)" multiple multiselect-search="true">
                             </select>
@@ -60,7 +60,7 @@
         <div>
             <div id="urls">
                 <div id="orderItemsContainer" class="row align-bottom">
-                    <partial name="~/Views/PartialViews/UrlAddPV.cshtml" model="Model" />
+                    <partial name="~/Views/Url/CreatePV.cshtml" model="Model" />
                 </div>
             </div>
         </div>
@@ -82,7 +82,7 @@
 </div>
 
 <!-- Modal -->
-<partial name="~/Views/PartialViews/AddCategoryModal.cshtml" />
+<partial name="~/Views/Category/CreatePV.cshtml" />
 
 @* <div>
     <a asp-action="Index">Back to List</a>

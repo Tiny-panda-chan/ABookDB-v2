@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Models.Models;
 using System;
 using System.Collections.Generic;
@@ -13,7 +15,7 @@ using WebProject.ViewModels.User;
 
 namespace WebProject.Controllers
 {
-    public class UserController(IModelTranslator _translator/*, IMapper _mapper*/) : Controller
+    public class UserController(IModelTranslator _translator, IStatusService _statusService) : Controller
     {
         [Authorize]
         [HttpGet]
@@ -38,8 +40,9 @@ namespace WebProject.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterVM registerVM)
         {
-
-            return View();
+            AuthHelper auth = new AuthHelper(_statusService);
+            await auth.RegisterUserAsync(HttpContext, registerVM);
+            return RedirectToAction("Index", "Book");
         }
 
         [HttpGet]
@@ -49,14 +52,29 @@ namespace WebProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(LoginVM loginVM)
+        public async Task<IActionResult> Login(LoginVM loginVM)
         {
-            AuthHelper auth = new AuthHelper();
-            return View();
+            AuthHelper auth = new AuthHelper(_statusService);
+            var sucLogin = await auth.LoginUser(HttpContext, loginVM);
+            if (sucLogin.Value)
+            {
+                return RedirectToAction("Index", "Book");
+            }
+            else
+            {
+                return View(loginVM);
+            }
+            
+        }
+        [Authorize]
+        public async Task<IActionResult> LogOut()
+        {
+            await HttpContext.SignOutAsync("authCookie");
+            return RedirectToAction("Index", "Book");
         }
 
-        
 
-        
+
+
     }
 }
