@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DBService\DBService.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
+    <ProjectReference Include="..\WebScraper\WebScraper.csproj" />
   </ItemGroup>
 
 </Project>

@@ -6,6 +6,7 @@ using Models.Models;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using WebProject.ModelTranslator.SpecificTranslators;
 using WebProject.ViewModels.Book;
 using WebProject.ViewModels.Review;
 using WebProject.ViewModels.User;

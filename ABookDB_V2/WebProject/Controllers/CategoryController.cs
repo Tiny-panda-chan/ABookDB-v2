@@ -22,6 +22,14 @@ namespace WebProject.Controllers
                 CategoryCreateVM = new() { AllCategories = new SelectList((new CategoryRepository(_dbContext).GetAllAsync().Result).Select(c => c.Name).ToList()) }
             };
 
+            foreach (var cat in returnViewModel.CategoryCreateVM.AllCategories)
+            {
+                if (returnViewModel.SelectedCategories.Any(sc => sc == cat.Text))
+                {
+                    cat.Selected = true;
+                }
+            }
+
             return PartialView("~/Views/Category/ListPV.cshtml", returnViewModel);
 
         }
