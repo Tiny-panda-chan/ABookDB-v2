@@ -40,7 +40,7 @@ namespace DBService.Repositories
 
         public async Task<IEnumerable<ReviewModel>?> GetAllReviewsAsync(BookModel model)
         {
-            await _context.Entry(model).Collection(c => c.Reviews).LoadAsync();
+            await _context.Entry(model).Collection(c => c.Reviews).Query().Include(u => u.createdBy).LoadAsync();
             if (model.Reviews is null)
                 return new List<ReviewModel>();
             return model.Reviews;

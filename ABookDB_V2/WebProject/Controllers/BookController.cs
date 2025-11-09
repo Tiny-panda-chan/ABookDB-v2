@@ -58,8 +58,8 @@ namespace WebProject.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateVM createVM)
         {
-            await _translator.SaveObjectAsync(createVM);
-            return RedirectToAction();
+            var createdBookId = await _translator.SaveObjectAsync(createVM);
+            return RedirectToAction("Detail", new { id = createdBookId });
         }
         /*
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

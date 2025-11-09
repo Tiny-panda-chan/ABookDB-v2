@@ -17,10 +17,13 @@ namespace DBService.Repositories
             _context = context;
         }
 
-        public void Add(TEntity entity)
+        public bool? Add(TEntity entity)
         {
+            if (_context.Set<TEntity>().Any(e => e == entity))
+                return false;
             _context.Add(entity);
             _context.SaveChanges();
+            return true;
         }
 
         public void Delete(TEntity entity)

@@ -45,7 +45,7 @@
             async: true,
             data: "bookId=" + @Model._id + "&content=" + document.getElementById('commentText').value,
             type: "POST",
-            url: '/Comment/AddComment',
+            url: '/Review/Create',
             success: function (component) {
                 $('#commentsDiv').html(component);
             }
@@ -57,7 +57,7 @@
             async: true,
             data: "commentId=" + val,
             type: "POST",
-            url: '/Comment/RemoveComment',
+            url: '/Review/Remove',
             success: function (component) {
                 $('#commentsDiv').html(component);
             }

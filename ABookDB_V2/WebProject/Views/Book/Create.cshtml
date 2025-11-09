@@ -9,7 +9,7 @@
 <h1 id="BookNameMirror">@(Model.Name != null ? Model.Name : "---")</h1>
 <hr />
 <div class="container">
-    <form asp-action="BookCreate" enctype="multipart/form-data" id="formdata">
+    <form asp-action="Create" enctype="multipart/form-data" id="formdata">
         <div class="row">
             <div class="col-4">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -92,7 +92,7 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    @* <script>
+    <script>
         function CopyText() {
             var input = document.getElementById('BookName');
             console.log(input.value.length)
@@ -103,5 +103,20 @@
                 mirror.innerText = "Name of the book"
             }
         }
-    </script> *@
+            function AddCategory() {
+            console.log($('#catName'));
+            $.ajax({
+                async: true,
+                data: "slist=" + $('#cats').val() + "&catName=" + document.getElementById("catName").value,
+                type: "POST",
+                url: '/Category/AddCategory',
+                success: function (partialView) {
+                    console.log("partialView: " + partialView);
+                    $('#categoryDiv').html(partialView);
+                    $('#AddCategoryModal').modal('hide');
+                    //MultiselectDropdown(window.MultiselectDropdownOptions);
+                }
+            });
+        }
+    </script>
 }

@@ -11,7 +11,7 @@ namespace Models.Interfaces
     {
         Task<ReviewModel?> GetByIdAsync(int id);
         Task<IEnumerable<ReviewModel>> GetAllAsync();
-        void Add(ReviewModel model);
+        bool? Add(ReviewModel model);
         void Edit(ReviewModel model);
         void Delete(ReviewModel model);
     }

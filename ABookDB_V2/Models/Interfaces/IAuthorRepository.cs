@@ -11,7 +11,7 @@ namespace Models.Interfaces
     {
         Task<AuthorModel?> GetByIdAsync(int id);
         Task<IEnumerable<AuthorModel>> GetAllAsync();
-        void Add(AuthorModel model);
+        bool? Add(AuthorModel model);
         void Edit(AuthorModel model);
         void Delete(AuthorModel model);
         Task<IEnumerable<BookModel>> GetAllBooksByAuthorAsync(AuthorModel model);

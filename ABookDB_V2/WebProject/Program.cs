@@ -17,6 +17,7 @@ namespace WebProject
                 x => x.MigrationsAssembly("DBService")));
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddScoped<IModelTranslator, ModelTranslator.ModelTranslator>();
             builder.Services.AddAutoMapper(configuration =>
@@ -33,6 +34,7 @@ namespace WebProject
                 o.Cookie.Name = "authCookie";
             });
             builder.Services.AddAuthorization();
+            
 
             var app = builder.Build();
 

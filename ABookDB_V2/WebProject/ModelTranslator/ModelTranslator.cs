@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using DBService.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Models.Models;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using WebProject.ViewModels.Book;
 using WebProject.ViewModels.Review;
@@ -10,7 +12,7 @@ using WebProject.ViewModels.User;
 
 namespace WebProject.ModelTranslator
 {
-    public class ModelTranslator(ABookDBContext _context, IMapper _mapper) : IModelTranslator
+    public class ModelTranslator(ABookDBContext _context, IMapper _mapper, IHttpContextAccessor _httpContextAccesor) : IModelTranslator
     {
         private readonly ABookDBContext _context;
         private AuthorRepository AuthorRepository = new AuthorRepository(_context);
@@ -40,8 +42,12 @@ namespace WebProject.ModelTranslator
         {
             BookModel bk = await BookRepository.GetByIdAsync(obj._id);
             obj.Name = bk.Name;
-            obj.BookCategories = (await BookRepository.GetAllCategoriesAsync(bk)).Select(bc =>bc.Name).ToList();
-            var dvm = _mapper.Map<DetailVM>(bk);
+            obj.Description = bk.Description;
+            obj.BookCategories = (await BookRepository.GetAllCategoriesAsync(bk))?.Select(bc =>bc.Name).ToList();
+            obj.BookFiles = (await BookRepository.GetAllFilesAsync(bk))?.Select(bc => bc.Name).ToList();
+            obj.TotalPages = bk.TotalPages;
+            obj.CreatedDate = bk.CreatedOn;
+            //obj = _mapper.Map<DetailVM>(bk);
             return obj;
         }
 
@@ -58,12 +64,10 @@ namespace WebProject.ModelTranslator
 
         public async Task<ViewModels.Book.CreateVM> FillObjectAsync(ViewModels.Book.CreateVM obj)
         {
-            obj.AllCategories = (await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
+            obj.CategoryCreateVM = await FillObjectAsync(new ViewModels.Category.CreateVM()); //= (await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
             obj.AllAuthors = (await AuthorRepository.GetAllAsync()).Select(c => c.Name).ToList();
             return obj;
         }
-
-        
 
         public async Task<int> SaveObjectAsync(EditVM obj)
         {
@@ -75,6 +79,10 @@ namespace WebProject.ModelTranslator
         public async Task<int> SaveObjectAsync(ViewModels.Book.CreateVM obj)
         {
             BookModel bk = new BookModel();
+            bk.Name = obj.Name;
+            bk.TotalPages = obj.TotalPages;
+            bk.Description = obj.Description;
+            bk.CreatedBy = await GetUser();
             BookRepository.Add(bk);
             //return saved object id for redirection
             return bk.Id;
@@ -105,10 +113,39 @@ namespace WebProject.ModelTranslator
             BookModel bk = await BookRepository.GetByIdAsync(obj.BookId);
             if (bk == null)
                 return 0;
-            ReviewModel rm = new ReviewModel() { createdOn = DateTime.Now, Text = obj.Text, book = bk };
-
+            UserModel user = await GetUser();
+            ReviewModel rm = new ReviewModel() { createdOn = DateTime.Now, Text = obj.Text, book = bk, createdBy = user};
+            
             ReviewRepository.Add(rm);
             return rm.Id;
+        }
+
+        //Category
+        public async Task<ViewModels.Category.CreateVM> FillObjectAsync(ViewModels.Category.CreateVM obj)
+        {
+            obj.AllCategories = new((await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList());
+            return obj;
+        }
+
+
+        public async Task<bool> SaveObjectAsync(ViewModels.Category.CreateVM obj)
+        {
+            CategoryModel cm = new CategoryModel() { Name = obj.Name };
+
+            return CategoryRepository.Add(cm).GetValueOrDefault();
+        }
+
+
+
+
+
+
+        private async Task<UserModel?> GetUser()
+        {
+            UserModel user = await UserRepository.GetByIdAsync(Int32.Parse(_httpContextAccesor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value));
+            if (user == null)
+                return new UserModel();
+            return user;
         }
     }
 }

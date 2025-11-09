@@ -11,7 +11,7 @@ namespace Models.Interfaces
     {
         Task<UserModel?> GetByIdAsync(int id);
         Task<IEnumerable<UserModel>> GetAllAsync();
-        void Add(UserModel model);
+        bool? Add(UserModel model);
         void Edit(UserModel model);
         void Delete(UserModel model);
         Task<IEnumerable<ReadBooksModel>> GetAllReadBooksAsync(UserModel model);

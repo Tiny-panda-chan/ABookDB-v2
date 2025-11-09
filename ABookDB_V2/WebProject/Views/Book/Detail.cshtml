@@ -65,6 +65,7 @@
             <div class="row">
                 <p class="m-0">Categories: </p>
                 <div class="justify-content-center">
+                    @if (Model.BookCategories != null)
                     @foreach (var item in Model.BookCategories)
                     {
                         <form asp-action="Index" method="get">
@@ -132,7 +133,7 @@
 
         <h4>Downloads:</h4>
         @{
-            if (Model.BookFiles?.Count == 0)
+            if (Model.BookFiles == null)
             {
                 <p class="alert-danger col-auto">No files uploaded</p>
             }

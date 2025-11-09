@@ -15,7 +15,8 @@ namespace WebProject.ViewModels.Book
         public IFormFileCollection? UploadedFiles { get; set; }
 
 
-        public List<string>? AllCategories { get; set; }
+        //public List<string>? AllCategories { get; set; }
+        public ViewModels.Category.CreateVM CategoryCreateVM { get; set; }
         public List<string>? AllAuthors { get; set; }
     }
 }

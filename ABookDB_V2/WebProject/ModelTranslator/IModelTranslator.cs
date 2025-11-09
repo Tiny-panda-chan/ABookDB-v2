@@ -21,5 +21,9 @@ namespace WebProject.ModelTranslator
         //Review
         Task<ListVM> FillObjectAsync(ListVM obj);
         Task<int> SaveObjectAsync(ViewModels.Review.CreateVM obj);
+
+        //Category
+        Task<ViewModels.Category.CreateVM> FillObjectAsync(ViewModels.Category.CreateVM obj);
+        Task<bool> SaveObjectAsync(ViewModels.Category.CreateVM obj);
     }
 }
