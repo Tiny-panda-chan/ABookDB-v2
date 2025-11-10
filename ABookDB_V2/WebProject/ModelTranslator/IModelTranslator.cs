@@ -5,7 +5,7 @@ using WebProject.ViewModels.User;
 
 namespace WebProject.ModelTranslator
 {
-    public interface IModelTranslator
+    public interface IModelTranslatorBook
     {
         //Books
         Task<IndexVM> FillObjectAsync(IndexVM obj);
@@ -15,15 +15,22 @@ namespace WebProject.ModelTranslator
         Task<int> SaveObjectAsync(EditVM obj);
         Task<int> SaveObjectAsync(ViewModels.Book.CreateVM obj);
         Task<bool> SaveObjectAsync(ViewModels.Book.DeleteVM obj);
-
+    }
+    public interface IModelTranslatorUser
+    {
         //User
         Task<ProfileVM> FillObjectAsync(ProfileVM obj);
         Task<bool> SaveObjectAsync(ViewModels.User.ReadBookVM obj);
 
+    }
+    public interface IModelTranslatorReview
+    {
         //Review
         Task<ListVM> FillObjectAsync(ListVM obj);
         Task<int> SaveObjectAsync(ViewModels.Review.CreateVM obj);
-
+    }
+    public interface IModelTranslatorCategory 
+    {
         //Category
         Task<ViewModels.Category.CreateVM> FillObjectAsync(ViewModels.Category.CreateVM obj);
         Task<bool> SaveObjectAsync(ViewModels.Category.CreateVM obj);

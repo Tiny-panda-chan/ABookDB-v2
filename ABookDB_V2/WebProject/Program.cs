@@ -19,7 +19,10 @@ namespace WebProject
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpContextAccessor();
 
-            builder.Services.AddScoped<IModelTranslator, ModelTranslator.ModelTranslator>();
+            builder.Services.AddScoped<IModelTranslatorBook, ModelTranslator.ModelTranslatorBook>();
+            builder.Services.AddScoped<IModelTranslatorUser, ModelTranslator.ModelTranslatorUser>();
+            builder.Services.AddScoped<IModelTranslatorCategory, ModelTranslator.ModelTranslatorCategory>();
+            builder.Services.AddScoped<IModelTranslatorReview, ModelTranslator.ModelTranslatorReview>();
             builder.Services.AddAutoMapper(configuration =>
             {
                 configuration.CreateMap<BookModel, DetailVM>();

@@ -7,6 +7,7 @@ using Models.Models;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using WebProject.Helpers;
 using WebProject.ViewModels.Book;
 using WebProject.ViewModels.Review;
 using WebProject.ViewModels.User;
@@ -14,16 +15,8 @@ using static WebScraper.ScrapedFileModel;
 
 namespace WebProject.ModelTranslator
 {
-    public class ModelTranslator(ABookDBContext _context, IMapper _mapper, IHttpContextAccessor _httpContextAccesor) : IModelTranslator
+    public class ModelTranslatorBook(ABookDBContext _context, IStatusService _services, IHttpContextAccessor _httpContextAccesor) : ModelTranslatorParent(_httpContextAccesor, _context), IModelTranslatorBook
     {
-        private readonly ABookDBContext _context;
-        private AuthorRepository AuthorRepository = new AuthorRepository(_context);
-        private BookRepository BookRepository = new BookRepository(_context);
-        private CategoryRepository CategoryRepository = new CategoryRepository(_context);
-        private UserRepository UserRepository = new UserRepository(_context);
-        private ReviewRepository ReviewRepository = new ReviewRepository(_context);
-
-
         //Books
         public async Task<IndexVM> FillObjectAsync(IndexVM obj)
         {
@@ -68,17 +61,18 @@ namespace WebProject.ModelTranslator
             await BookRepository.GetAllCategoriesAsync(bk);
             await BookRepository.GetAllFilesAsync(bk);
             await BookRepository.GetAllUrlsAsync(bk);
-            obj = _mapper.Map<EditVM>(bk);
+            //obj = _mapper.Map<EditVM>(bk);
 
             return obj;
         }
 
         public async Task<ViewModels.Book.CreateVM> FillObjectAsync(ViewModels.Book.CreateVM obj)
         {
-            obj.CategoryCreateVM = await FillObjectAsync(new ViewModels.Category.CreateVM()); //= (await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
+            obj.CategoryCreateVM = await _services.GetService<ModelTranslatorCategory>().FillObjectAsync(new ViewModels.Category.CreateVM()); //= (await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
             obj.AllAuthors = (await AuthorRepository.GetAllAsync()).Select(c => c.Name).ToList();
             return obj;
         }
+
 
         public async Task<int> SaveObjectAsync(EditVM obj)
         {
@@ -129,80 +123,6 @@ namespace WebProject.ModelTranslator
 
             BookRepository.Delete(book);
             return true;
-        }
-
-        //User
-        public Task<ProfileVM> FillObjectAsync(ProfileVM obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> SaveObjectAsync(ViewModels.User.ReadBookVM obj)
-        {
-            UserModel user = await GetUser();
-            BookModel book = await BookRepository.GetByIdAsync(obj.BookID);
-            if (book == null || user == null)
-                return false;
-            ReadBooksModel rb = new ReadBooksModel();
-            rb.Book = book;
-            rb.User = user;
-            rb.Page = obj.ReadToPage;
-            rb.ReadStage = (obj.ReadToPage < book.TotalPages) ? ReadStage.InProgress : ReadStage.Finished;
-            UserRepository.AddOrUpdateReadBook(rb);
-            return true;
-        }
-
-        //Review
-        public async Task<ListVM> FillObjectAsync(ListVM obj)
-        {
-            BookModel bk = await BookRepository.GetByIdAsync(obj._id);
-            if (bk == null)
-                return null;
-            await BookRepository.GetAllReviewsAsync(bk);
-            if (bk.Reviews == null)
-                return null;
-            obj.ReviewItems = bk.Reviews.Select(c => new ListVM.ReviewItem() { TextContent = c.Text, CreatedBy = c.createdBy.Username, CreatedOn = c.createdOn }).ToList();
-            return obj;
-        }
-
-        public async Task<int> SaveObjectAsync(ViewModels.Review.CreateVM obj)
-        {
-            BookModel bk = await BookRepository.GetByIdAsync(obj.BookId);
-            if (bk == null)
-                return 0;
-            UserModel user = await GetUser();
-            ReviewModel rm = new ReviewModel() { createdOn = DateTime.Now, Text = obj.Text, book = bk, createdBy = user};
-            
-            ReviewRepository.Add(rm);
-            return rm.Id;
-        }
-
-        //Category
-        public async Task<ViewModels.Category.CreateVM> FillObjectAsync(ViewModels.Category.CreateVM obj)
-        {
-            obj.AllCategories = new((await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList());
-            return obj;
-        }
-
-
-        public async Task<bool> SaveObjectAsync(ViewModels.Category.CreateVM obj)
-        {
-            CategoryModel cm = new CategoryModel() { Name = obj.Name };
-
-            return CategoryRepository.Add(cm).GetValueOrDefault();
-        }
-
-
-
-
-
-
-        private async Task<UserModel?> GetUser()
-        {
-            UserModel user = await UserRepository.GetByIdAsync(Int32.Parse(_httpContextAccesor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value));
-            if (user == null)
-                return new UserModel();
-            return user;
         }
     }
 }

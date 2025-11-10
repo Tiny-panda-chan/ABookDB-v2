@@ -9,7 +9,7 @@ using WebProject.ModelTranslator;
 namespace WebProject.Controllers
 {
     [Authorize]
-    public class CategoryController(IModelTranslator _translator, ABookDBContext _dbContext) : Controller
+    public class CategoryController(IModelTranslatorCategory _translator, ABookDBContext _dbContext) : Controller
     {
         public async Task<IActionResult> AddCategory(string slist, string catName)
         {

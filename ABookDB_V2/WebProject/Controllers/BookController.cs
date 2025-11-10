@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WebProject.Controllers
 {
-    public class BookController(IModelTranslator _translator/*, IMapper _mapper*/) : Controller
+    public class BookController(IModelTranslatorBook _translator/*, IMapper _mapper*/) : Controller
     {
 
         public async Task<IActionResult> Index()

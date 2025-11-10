@@ -16,7 +16,7 @@ using static WebScraper.ScrapedFileModel;
 
 namespace WebProject.Controllers
 {
-    public class UserController(IModelTranslator _translator, IStatusService _statusService) : Controller
+    public class UserController(IModelTranslatorUser _translator, IStatusService _statusService) : Controller
     {
         [Authorize]
         [HttpGet]

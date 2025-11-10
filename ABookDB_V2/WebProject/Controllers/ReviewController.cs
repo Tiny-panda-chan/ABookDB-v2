@@ -5,7 +5,7 @@ using WebProject.ViewModels.Review;
 
 namespace WebProject.Controllers
 {
-    public class ReviewController(IModelTranslator _translator) : Controller
+    public class ReviewController(IModelTranslatorReview _translator) : Controller
     {
         [Authorize]
         [HttpPost]
@@ -18,7 +18,7 @@ namespace WebProject.Controllers
 
         
     }
-    public class CommentViewComponent(IModelTranslator _translator) : ViewComponent
+    public class CommentViewComponent(IModelTranslatorReview _translator) : ViewComponent
     {
         public async Task<IViewComponentResult> InvokeAsync(int bookId)
         {
