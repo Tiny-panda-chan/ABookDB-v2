@@ -1,5 +1,35 @@
-﻿@*
+﻿@model WebProject.ViewModels.Book.DetailVM
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    Layout = "";
 }
+<div class="modal fade" id="ReadToReadModal" tabindex="-1" role="dialog" aria-labelledby="ReadToReadModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ReadToReadModalLabel">Read info</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body row">
+                <div class="form-group col">
+                    <label>Total pages: @Model.TotalPages</label>
+                    @* <input asp-for=  type="text" class="form-control" required="required" name="newCat" /> *@
+                </div>
+                <div class="form-group col">
+                    <label>Read to page:</label>
+                    <input id="readToPage" name="readToPage" max="@Model.TotalPages" type="number" autocomplete="off" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="$('#ReadToReadModal').modal('hide')">Close</button>
+                <button type="button" class="btn btn-primary" onclick="AddToRead()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

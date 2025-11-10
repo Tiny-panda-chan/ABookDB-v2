@@ -14,18 +14,6 @@ namespace Models.Models
         public int Chapter { get; set; }
         public int Page { get; set; } //last page user read
         public ReadStage ReadStage { get; set; } = ReadStage.NotStarted;
-
-        //public void UpdateReadStage()
-        //{
-        //    if (Book.TotalPages <= Page)
-        //    {
-        //        ReadStage = ReadStage.Finished;
-        //    }
-        //    else
-        //    {
-        //        ReadStage = ReadStage.InProgress;
-        //    }
-        //}
     }
 
 

@@ -1,6 +1,6 @@
 ﻿@model WebProject.ViewModels.Book.CreateVM
 @{
-    /*SelectList cats = new SelectList(Model.CategoryCreateVM.AllCategories);
+    SelectList cats = Model.CategoryCreateVM.AllCategories;
     if (Model != null ? Model.SelectedCategories != null : false)
     {
         foreach (var item in cats)
@@ -11,16 +11,29 @@
             }
         }
 
-    }*/
-   
+    }
 }
 
 <label asp-for="@Model.CategoryCreateVM.AllCategories" class="control-label"></label>
-<select id="cats" asp-for="@Model.CategoryCreateVM.AllCategories" class="form-control" name="@Model.CategoryCreateVM.AllCategories" asp-items="@(Model.CategoryCreateVM.AllCategories)" multiple multiselect-search="true">
+<select id="cats" asp-for="@Model.SelectedCategories" class="form-control" name="@Model.SelectedCategories" asp-items="@(cats)" multiple multiselect-search="true">
 </select>
 <span asp-validation-for="@Model.CategoryCreateVM.AllCategories" class="text-danger"></span>
 <input type="button" onclick="$('#AddCategoryModal').modal('show')" class="btn btn-secondary w-100 mt-2" value="Add category" />
 
 <script>
-    
+    function AddCategory() {
+            console.log($('#catName'));
+            $.ajax({
+                async: true,
+                data: "slist=" + $('#cats').val() + "&catName=" + document.getElementById("catName").value,
+                type: "POST",
+                url: '/Category/AddCategory',
+                success: function (partialView) {
+                    console.log("partialView: " + partialView);
+                    $('#categoryDiv').html(partialView);
+                    $('#AddCategoryModal').modal('hide');
+                    MultiselectDropdown(window.MultiselectDropdownOptions);
+                }
+            });
+        }
 </script>

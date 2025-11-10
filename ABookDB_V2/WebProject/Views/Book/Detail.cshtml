@@ -19,9 +19,9 @@
             {
                 <div class="col-6 align-content-end">
                     @{
-                        if (ViewBag.ReadToPage != null)
+                        if (Model.ReadToPage > 0)
                         {
-                            if (ViewBag.ReadToPage >= Model.TotalPages)
+                            if (Model.ReadToPage >= Model.TotalPages)
                             {
                                 <input type="button" value="Finished" class="btn-outline-success float-end" disabled />
                             }
@@ -49,12 +49,12 @@
                 <p class="col">Total pages: @Model.TotalPages.ToString()</p>
             </div>
             @{
-                if (ViewBag.ReadToPage != null)
+                if (Model.ReadToPage > 0)
                 {
                     <div class="form-group row justify-content-between">
                         <label class="col">Read to page:</label>
                         <div class="col">
-                            <input id="updateReadToPage" name="readToPage" value="@ViewBag.ReadToPage" max="@Model.TotalPages" type="number" autocomplete="off" />
+                            <input id="updateReadToPage" name="readToPage" value="@Model.ReadToPage" max="@Model.TotalPages" type="number" autocomplete="off" />
                         </div>
                         <div class="col">
                             <button type="button" class="btn col" onclick="UpdateRead()">Update</button>
@@ -169,8 +169,7 @@
     @* <a asp-page="./IndexList">Back to List</a> *@
 </div>
 <!-- Modal -->
-@* <partial name="~/Views/PartialViews/ReadBookModal.cshtml" /> *@
-@* @Render("~/Views/PartialViews/ReadBookModal") *@
+<partial name="~/Views/User/CreateReadRecordPV.cshtml" />
 
 
 @section Scripts {

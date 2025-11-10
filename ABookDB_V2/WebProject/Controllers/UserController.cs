@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using WebProject.Helpers;
 using WebProject.ModelTranslator;
 using WebProject.ViewModels.User;
+using static WebScraper.ScrapedFileModel;
 
 namespace WebProject.Controllers
 {
@@ -73,6 +74,15 @@ namespace WebProject.Controllers
             return RedirectToAction("Index", "Book");
         }
 
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> AddOrUpdateReadBook(int bookId, int readToPage)
+        {
+            var res = await _translator.SaveObjectAsync(new ReadBookVM() { BookID = bookId, ReadToPage = readToPage});
+            if (!res)
+                return BadRequest();
+            return RedirectToAction("Detail", "Book", new { id = bookId });
+        }
 
 
 

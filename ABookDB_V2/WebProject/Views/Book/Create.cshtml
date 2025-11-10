@@ -103,20 +103,6 @@
                 mirror.innerText = "Name of the book"
             }
         }
-            function AddCategory() {
-            console.log($('#catName'));
-            $.ajax({
-                async: true,
-                data: "slist=" + $('#cats').val() + "&catName=" + document.getElementById("catName").value,
-                type: "POST",
-                url: '/Category/AddCategory',
-                success: function (partialView) {
-                    console.log("partialView: " + partialView);
-                    $('#categoryDiv').html(partialView);
-                    $('#AddCategoryModal').modal('hide');
-                    //MultiselectDropdown(window.MultiselectDropdownOptions);
-                }
-            });
-        }
+            
     </script>
 }

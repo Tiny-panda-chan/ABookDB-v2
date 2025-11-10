@@ -70,8 +70,6 @@
             url: '/Url/ValidateUrl',
             success: function (urval) {
                 console.log("success");
-                //toFill.append("<button onclick=\"FetchBookData(\`" + urval + "\`) \">Fetch data from ulr (experimental)</button>");
-                //toFill.append("<form asp-action=\"FetchBookData\" method=\"get\"><input type =\"text\" name=\"url\" value=\"" + urval + "\" hidden /><input type=\"submit\" value=\"Fetch data from ulr(experimental)\" class=\"mt - 1\" /></form >");
                 toFill.append("<a href=\"/Books/FetchBookData?url=" + urval + "\" class=\"btn btn-secondary\">Fetch data from ulr (experimental)</a>");
             }
         });

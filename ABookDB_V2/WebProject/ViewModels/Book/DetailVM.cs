@@ -13,10 +13,12 @@ namespace WebProject.ViewModels.Book
         public string Author { get; set; }
         public string Description { get; set; }
         public int TotalPages { get; set; }
+        public int? ReadToPage { get; set; }
         public DateTime CreatedDate { get; set; }
         public List<string> BookCategories { get; set; }
         public List<string> BookFiles { get; set; }
         public List<string> BookUrls { get; set; }
+
         //public List<ReviewItem> BookReviews { get; set; }
         //public struct ReviewItem
         //{

@@ -16,5 +16,6 @@ namespace Models.Interfaces
         void Delete(UserModel model);
         Task<IEnumerable<ReadBooksModel>> GetAllReadBooksAsync(UserModel model);
         Task<IEnumerable<BookModel>> GetAllBookCreatedByAsync(UserModel model);
+        void AddOrUpdateReadBook(ReadBooksModel model);
     }
 }

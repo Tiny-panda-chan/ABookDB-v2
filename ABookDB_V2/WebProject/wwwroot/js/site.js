@@ -3,7 +3,7 @@
 
 // Write your JavaScript code.
 
-/*nice multiselect
+//nice multiselect
 var style = document.createElement('style');
 style.setAttribute("id", "multiselect_dropdown_styles");
 style.innerHTML = `
@@ -229,5 +229,3 @@ function MultiselectDropdown(options) {
 window.addEventListener('load', () => {
     MultiselectDropdown(window.MultiselectDropdownOptions);
 });
-
-*/

@@ -1,4 +1,6 @@
-﻿namespace WebProject.ViewModels.Book
+﻿using Models.Models;
+
+namespace WebProject.ViewModels.Book
 {
     public class IndexVM
     {
@@ -11,8 +13,11 @@
             public string Title { get; set; }
             public string Description { get; set; }
             public List<string> BookCategories { get; set; }
+            public int CreatedById { get; set; }
+            public ReadStage? UserProgress { get; set; }
+
         }
     }
-    
+
 
 }

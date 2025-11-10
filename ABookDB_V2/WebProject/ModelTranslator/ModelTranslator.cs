@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
 using DBService.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Models.Models;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using WebProject.ModelTranslator.SpecificTranslators;
 using WebProject.ViewModels.Book;
 using WebProject.ViewModels.Review;
 using WebProject.ViewModels.User;
+using static WebScraper.ScrapedFileModel;
 
 namespace WebProject.ModelTranslator
 {
@@ -27,13 +28,15 @@ namespace WebProject.ModelTranslator
         public async Task<IndexVM> FillObjectAsync(IndexVM obj)
         {
             var books = await BookRepository.GetAllAsync();
+            UserModel user = await GetUser();
             obj.BookList = books.Select(bl => new IndexVM.BookItem
             {
                 Id = bl.Id,
                 Title = bl.Name,
                 Description = bl.Description,
-                //BookCategories = (BookRepository.GetAllCategoriesAsync(bl).Result == null ? new List<string>() : BookRepository.GetAllCategoriesAsync(bl).Result.Select(c => c.Name).ToList() )
-                BookCategories = BookRepository.GetAllCategoriesAsync(bl).Result.Select(c => c.Name).ToList()
+                BookCategories = BookRepository.GetAllCategoriesAsync(bl).Result.Select(c => c.Name)?.ToList(),
+                CreatedById = bl.CreatedBy.Id,
+                UserProgress = (UserRepository.GetReadByBookId(user, bl.Id))?.Result?.ReadStage
             }).ToList();
             obj.Categories = (await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
             return obj;
@@ -47,7 +50,14 @@ namespace WebProject.ModelTranslator
             obj.BookCategories = (await BookRepository.GetAllCategoriesAsync(bk))?.Select(bc =>bc.Name).ToList();
             obj.BookFiles = (await BookRepository.GetAllFilesAsync(bk))?.Select(bc => bc.Name).ToList();
             obj.TotalPages = bk.TotalPages;
-            obj.CreatedDate = bk.CreatedOn;
+            obj.CreatedDate = bk.CreatedOn; 
+            UserModel user = await GetUser();
+            if (user != null)
+            {
+                ReadBooksModel rbm = UserRepository.GetReadByBookId(user, obj._id)?.Result;
+                if (rbm != null)
+                    obj.ReadToPage = rbm.Page;
+            }
             //obj = _mapper.Map<DetailVM>(bk);
             return obj;
         }
@@ -84,9 +94,41 @@ namespace WebProject.ModelTranslator
             bk.TotalPages = obj.TotalPages;
             bk.Description = obj.Description;
             bk.CreatedBy = await GetUser();
+            List<FileModel> files = new List<FileModel>();
+            if (obj.UploadedFiles != null)
+            {
+                foreach (var file in obj.UploadedFiles)
+                {
+                    using (var memStream = new MemoryStream())
+                    {
+                        await file.CopyToAsync(memStream);
+                        var ci = new FileModel
+                        {
+                            Data = memStream.ToArray(),
+                            Name = file.FileName,
+                            FileType = Path.GetExtension(file.FileName)
+                        };
+                        files.Add(ci);
+                    }
+                }
+            }
+            bk.BookFiles = files;
             BookRepository.Add(bk);
             //return saved object id for redirection
             return bk.Id;
+        }
+
+        public async Task<bool> SaveObjectAsync(ViewModels.Book.DeleteVM obj)
+        {
+            UserModel user = await GetUser();
+            BookModel book = await BookRepository.GetByIdAsync(obj.Id);
+            if (book == null || user  == null)
+                return false;
+            if (book.CreatedBy != user)
+                return false;
+
+            BookRepository.Delete(book);
+            return true;
         }
 
         //User
@@ -95,6 +137,20 @@ namespace WebProject.ModelTranslator
             throw new NotImplementedException();
         }
 
+        public async Task<bool> SaveObjectAsync(ViewModels.User.ReadBookVM obj)
+        {
+            UserModel user = await GetUser();
+            BookModel book = await BookRepository.GetByIdAsync(obj.BookID);
+            if (book == null || user == null)
+                return false;
+            ReadBooksModel rb = new ReadBooksModel();
+            rb.Book = book;
+            rb.User = user;
+            rb.Page = obj.ReadToPage;
+            rb.ReadStage = (obj.ReadToPage < book.TotalPages) ? ReadStage.InProgress : ReadStage.Finished;
+            UserRepository.AddOrUpdateReadBook(rb);
+            return true;
+        }
 
         //Review
         public async Task<ListVM> FillObjectAsync(ListVM obj)

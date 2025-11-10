@@ -85,43 +85,42 @@
 
                 </td>
 
-                @* @{
+                 @{
                     if (User.Identity?.IsAuthenticated ?? false)
                     {
                         <td>
-                            @if (!Model.ReadBooks.Any(rd => rd.Book.ID == item.ID))
+                            @if (item.UserProgress != null)
                             {
-                                <input type="button" value="@ReadStage.NotStarted" class="btn-outline-dark" disabled />
-                            }
-                            else
-                            {
-                                switch (@Model.ReadBooks.First(rd => rd.Book.ID == item.ID).ReadStage)
+                                switch (item.UserProgress)
                                 {
-                                    case ReadStage.InProgress:
+                                    case Models.Models.ReadStage.InProgress:
                                         <input type="button" value="In progress" class="btn-outline-info" disabled />
                                         break;
-                                    case ReadStage.Finished:
+
+                                    case Models.Models.ReadStage.Finished:
                                         <input type="button" value="Finished" class="btn-outline-success" disabled />
                                         break;
+
+                                    case Models.Models.ReadStage.NotStarted:
+                                        <input type="button" value="Not started" class="btn-outline-dark" disabled />
+                                        break;
                                 }
-
                             }
-
                         </td>
                         <td>
-                            @if (User.Claims.FirstOrDefault(c => (c.Type == ClaimTypes.NameIdentifier && c.Value == item.CreatedBy.ID.ToString()) || (c.Type == "admin" && c.Value == "true")) != null)
+                            @if (User.Claims.FirstOrDefault(c => (c.Type == ClaimTypes.NameIdentifier && c.Value == item.CreatedById.ToString()) || (c.Type == "admin" && c.Value == "true")) != null)
                             {
-                                <a asp-controller="Books" asp-action="BookEdit" asp-route-id="@item.ID.ToString()">
+                                <a asp-controller="Book" asp-action="Edit" asp-route-id="@item.Id.ToString()">
                                     Edit
                                 </a>
-                                <a asp-controller="Books" asp-action="BookDelete" asp-route-id="@item.ID.ToString()">
+                                <a asp-controller="Book" asp-action="Delete" asp-route-id="@item.Id.ToString()">
                                     Delete
                                 </a>
                             }
                         </td>
                     }
 
-                } *@
+                } 
 
             </tr>
         }

@@ -61,6 +61,18 @@ namespace WebProject.Controllers
             var createdBookId = await _translator.SaveObjectAsync(createVM);
             return RedirectToAction("Detail", new { id = createdBookId });
         }
+
+
+        [Authorize]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return BadRequest();
+            var res = await _translator.SaveObjectAsync(new ViewModels.Book.DeleteVM() { Id = id.Value });
+            if (!res)
+                return BadRequest();
+            return RedirectToAction("Index");
+        }
         /*
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

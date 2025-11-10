@@ -14,9 +14,11 @@ namespace WebProject.ModelTranslator
         Task<ViewModels.Book.CreateVM> FillObjectAsync(ViewModels.Book.CreateVM obj);
         Task<int> SaveObjectAsync(EditVM obj);
         Task<int> SaveObjectAsync(ViewModels.Book.CreateVM obj);
+        Task<bool> SaveObjectAsync(ViewModels.Book.DeleteVM obj);
 
         //User
         Task<ProfileVM> FillObjectAsync(ProfileVM obj);
+        Task<bool> SaveObjectAsync(ViewModels.User.ReadBookVM obj);
 
         //Review
         Task<ListVM> FillObjectAsync(ListVM obj);

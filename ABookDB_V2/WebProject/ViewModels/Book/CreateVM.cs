@@ -10,7 +10,7 @@ namespace WebProject.ViewModels.Book
         public string Description { get; set; }
         public AuthorModel? Author { get; set; }
         public int TotalPages { get; set; }
-        public List<string>? Urls { get; set; }
+        public List<string>? Urls { get; set; } = new List<string>() { "" };
         public List<string>? SelectedCategories { get; set; }
         public IFormFileCollection? UploadedFiles { get; set; }
 

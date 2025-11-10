@@ -17,9 +17,14 @@ namespace DBService.Repositories
             _context = context;
         }
 
+        public async Task<BookModel?> GetByIdAsync(int id)
+        {
+            return await _context.Books.Include(c => c.CreatedBy).Include(a => a.Author).SingleOrDefaultAsync(b => b.Id == id);
+        }
+
         public async Task<IEnumerable<BookModel>> GetAllAsync()
         {
-            return await _context.Books.ToListAsync();
+            return await _context.Books.Include(u => u.CreatedBy).Include(a => a.Author).ToListAsync();
         }
 
         public async Task<IEnumerable<CategoryModel>?> GetAllCategoriesAsync(BookModel model)

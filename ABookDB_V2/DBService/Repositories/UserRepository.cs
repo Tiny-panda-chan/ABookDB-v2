@@ -36,5 +36,29 @@ namespace DBService.Repositories
         {
             return await _context.ReadBooks.Include(b => b.Book).Include(u => u.User).Where(u => u.User == model).ToListAsync();
         }
+
+        public async Task<ReadBooksModel?> GetReadByBookId(UserModel model, int bookId)
+        {
+            var rb = await _context.ReadBooks.Include(b => b.Book).Include(u => u.User).Where(u => u.User == model && u.Book.Id == bookId).SingleOrDefaultAsync();
+            if (rb == null)
+                return new ReadBooksModel();
+            return (rb);
+        }
+
+        public void AddOrUpdateReadBook(ReadBooksModel model)
+        {
+            ReadBooksModel? rb = (_context.ReadBooks.FirstOrDefault(b => b.User == model.User && b.Book == model.Book));
+            if (rb == null)
+            {
+                _context.ReadBooks.Add(model);
+            }
+            else
+            {
+                rb.Page = model.Page;
+                rb.ReadStage = model.ReadStage;
+                _context.ReadBooks.Update(rb);
+            }
+            _context.SaveChanges();
+        }
     }
 }
