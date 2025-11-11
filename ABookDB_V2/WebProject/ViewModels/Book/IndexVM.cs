@@ -6,6 +6,8 @@ namespace WebProject.ViewModels.Book
     {
         public List<BookItem>? BookList { get; set; }
         public List<string> Categories { get; set; }
+        public string? SearchString { get; set; }
+        public List<string>? SearchCategories { get; set; }
 
         public struct BookItem
         {

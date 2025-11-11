@@ -23,11 +23,11 @@ namespace WebProject
             builder.Services.AddScoped<IModelTranslatorUser, ModelTranslator.ModelTranslatorUser>();
             builder.Services.AddScoped<IModelTranslatorCategory, ModelTranslator.ModelTranslatorCategory>();
             builder.Services.AddScoped<IModelTranslatorReview, ModelTranslator.ModelTranslatorReview>();
-            builder.Services.AddAutoMapper(configuration =>
+            /*builder.Services.AddAutoMapper(configuration =>
             {
                 configuration.CreateMap<BookModel, DetailVM>();
                 configuration.CreateMap<BookModel, EditVM>();
-            });
+            });*/
             builder.Services.AddScoped<IStatusService, StatusService>();
 
             builder.Services.AddAuthentication().AddCookie("authCookie", o =>

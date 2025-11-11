@@ -11,6 +11,8 @@ namespace Models.Interfaces
     {
         Task<BookModel?> GetByIdAsync(int id);
         Task<IEnumerable<BookModel>> GetAllAsync();
+        Task<IEnumerable<BookModel>> GetAllAsyncByCategories(List<string> searchCategories);
+        Task<IEnumerable<BookModel>> GetAllAsyncByString(string searchString);
         bool? Add(BookModel model);
         void Edit(BookModel model);
         void Delete(BookModel model);

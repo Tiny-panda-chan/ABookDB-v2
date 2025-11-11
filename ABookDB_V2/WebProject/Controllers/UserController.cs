@@ -22,14 +22,22 @@ namespace WebProject.Controllers
         [HttpGet]
         public async Task<IActionResult> Profile()
         {
-            return View();
+            ProfileVM pvm = await _translator.FillObjectAsync(new ProfileVM());
+            return View(pvm);
         }
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Profile(ProfileVM profileVM)
+        public async Task<IActionResult> ChangeEmail(ProfileVM profileVM)
         {
-
-            return View();
+            var res = await _translator.SaveObjectAsync(profileVM);
+            return View("Profile");
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ProfileVM profileVM)
+        {
+            var res = await _translator.SaveObjectAsync(profileVM);
+            return View("Profile");
         }
 
         [HttpGet]

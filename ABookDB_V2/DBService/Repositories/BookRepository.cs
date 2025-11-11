@@ -27,6 +27,16 @@ namespace DBService.Repositories
             return await _context.Books.Include(u => u.CreatedBy).Include(a => a.Author).ToListAsync();
         }
 
+        public async Task<IEnumerable<BookModel>> GetAllAsyncByString(string searchString)
+        {
+            return await _context.Books.Include(u => u.CreatedBy).Include(a => a.Author).Where(b => b.Name.Contains(searchString)).ToListAsync();
+        }
+
+        public async Task<IEnumerable<BookModel>> GetAllAsyncByCategories(List<string> searchCategories)
+        {
+            return await _context.Books.Include(u => u.CreatedBy).Include(c => c.Categories).Include(a => a.Author).Where(b => b.Categories.Any(c => searchCategories.Contains(c.Name))).ToListAsync();
+        }
+
         public async Task<IEnumerable<CategoryModel>?> GetAllCategoriesAsync(BookModel model)
         {
             await _context.Entry(model).Collection(c => c.Categories).LoadAsync();

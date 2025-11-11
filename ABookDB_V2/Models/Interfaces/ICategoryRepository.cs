@@ -10,7 +10,8 @@ namespace Models.Interfaces
 {
     public interface ICategoryRepository
     {
-        Task<CategoryModel?> GetByIdAsync(int id);
+        Task<CategoryModel?> GetByIdAsync(int id); 
+        Task<CategoryModel?> GetByNameAsync(string name);
         Task<IEnumerable<CategoryModel>> GetAllAsync();
         bool? Add(CategoryModel model);
         void Edit(CategoryModel model);

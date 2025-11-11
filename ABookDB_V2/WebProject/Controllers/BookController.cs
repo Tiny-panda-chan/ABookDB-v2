@@ -14,7 +14,7 @@ namespace WebProject.Controllers
 {
     public class BookController(IModelTranslatorBook _translator/*, IMapper _mapper*/) : Controller
     {
-
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             IndexVM indexVM = await _translator.FillObjectAsync(new ViewModels.Book.IndexVM());
@@ -23,6 +23,19 @@ namespace WebProject.Controllers
             //IndexVM ivm = _mapper.Map<IndexVM>(_translator.);
             return View(indexVM);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(IndexVM indexVM)
+        {
+            if (indexVM.SearchString == null && indexVM.SearchCategories == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            await _translator.FillObjectAsync(indexVM, indexVM.SearchString, indexVM.SearchCategories);
+            return View(indexVM);
+        }
+
 
         public async Task<IActionResult> Detail(int id)
         {
@@ -72,6 +85,13 @@ namespace WebProject.Controllers
             if (!res)
                 return BadRequest();
             return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Download(int bookId, string fileName)
+        {
+            DownloadFileVM dfvm = await _translator.FillObjectAsync(bookId, new DownloadFileVM() { FileName = fileName });
+            return File(dfvm.Data, System.Net.Mime.MediaTypeNames.Application.Octet, dfvm.FileName);
         }
         /*
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -26,5 +26,10 @@ namespace DBService.Repositories
         {
             return await _context.Books.Include(u => u.Categories).Where(b => b.Categories.Any(c => c == model)).ToListAsync();
         }
+
+        public async Task<CategoryModel?> GetByNameAsync(string name)
+        {
+            return await _context.Categories.SingleOrDefaultAsync(c => c.Name == name);
+        }
     }
 }

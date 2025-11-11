@@ -1,5 +1,121 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@* @model WebProject.ViewModels.Book.EditVM
+
 @{
+    ViewData["Title"] = "Edit";
+    SelectList cats = new SelectList(Model.Categories);
+    foreach (var item in cats)
+    {
+        if (Model..Categories.Any(c => c.ID == Int32.Parse(item.Value)))
+        {
+            item.Selected = true;
+        }
+    }
+    //Model.Book.Urls = new List<BookUrl>();
+    //Model.Urls = new List<string>() { "sdf", "aaaaa" };
 }
+
+<h1 id="BookNameMirror">@Model.Book.Name</h1>
+<hr />
+<div class="container">
+    <form asp-action="BookEdit" enctype="multipart/form-data" id="formdata">
+        <div class="row">
+            <div class="col-4">
+                <input type="hidden" asp-for="@Model.Book.ID" />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Book.Name" class="control-label"></label>
+                    <input autofocus autocomplete="off" id="BookName" onkeyup="CopyText()" asp-for="Book.Name" class="form-control" />
+                    <span asp-validation-for="Book.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="form-group row">
+                        <div class="col">
+                            <label asp-for="Book.Categories" class="control-label"></label>
+                            <select id="cats" asp-for="Cats" class="form-control" asp-items="@(cats)" multiple multiselect-search="true">
+                            </select>
+                            <span asp-validation-for="Book.Categories" class="text-danger"></span>
+                            <button onclick="$('#exampleModal').modal('show')" class="btn btn-secondary w-100 mt-2">Add category</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="form-group">
+                    <label asp-for="Book.Description" class="control-label"></label>
+                    <textarea asp-for="Book.Description" class="form-control" rows="5">
+                    </textarea>
+                    <span asp-validation-for="Book.Description" class="text-danger"></span>
+                </div>
+            </div>
+
+        </div>
+        <div class="row mt-2">
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="Book.TotalChapters" class="control-label">Chapters</label>
+                    <input asp-for="Book.TotalChapters" class="form-control" />
+                    <span asp-validation-for="Book.TotalChapters" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="Book.TotalPages" class="control-label">Pages</label>
+                    <input asp-for="Book.TotalPages" class="form-control" />
+                    <span asp-validation-for="Book.TotalPages" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="mt-2">
+            <div id="urls">
+                <div id="orderItemsContainer" class="row align-bottom">
+                    <partial name="~/Views/PartialViews/UrlAddPV.cshtml" model="Model" />
+                </div>
+            </div>
+        </div>
+        <div class="row" id="uploadFile" hidden>
+            <div class="col-1*">
+                <h4>File:</h4>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <input asp-for="formFile" class="form-control" type="file" accept=".pdf, .epub, .txt" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row p-2 mt-2">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Employee</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Name</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="$('#exampleModal').modal('hide')">Close</button>
+                <button type="button" class="btn btn-primary" onclick="$('#exampleModal').modal('hide')">Add category</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}
+*@

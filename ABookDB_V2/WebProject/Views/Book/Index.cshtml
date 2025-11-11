@@ -3,27 +3,28 @@
 
 @{
     ViewData["Title"] = "book list";
-    // SelectList searchCats = new SelectList(Model.Categories, "ID", "Name");
-    // foreach (var item in Model.Categories)
-    // {
-    //     if (searchCats.Any(sc => sc.Value == item))
-    //     {
-    //         searchCats.FirstOrDefault(sc => sc.Value == item).Selected = true;
-    //     }
-    // }
+
+    SelectList searchCats = new SelectList(Model.Categories);
+    foreach (var item in Model.SearchCategories ?? Enumerable.Empty<string>())
+    {
+        if (searchCats.Any(sc => sc.Text == item))
+        {
+            searchCats.FirstOrDefault(sc => sc.Text == item).Selected = true;
+        }
+    }
 }
 
 <h1>Index</h1>
 <hr />
 <div class="ps-1">
-    <form asp-action="Index" method="get">
+    <form asp-action="Index" method="post">
         <div class="row">
             <h4>Filters:</h4>
             <div class="col">
-                <input autofocus autocomplete="off" class="form-text w-100 text-black" id="searchBox" type="text" name="searchStr" value="@ViewData["srch"]" placeholder="Search" />
+                <input autofocus autocomplete="off" class="form-text w-100 text-black" id="searchBox" type="text" asp-for="SearchString" placeholder="Search" />
             </div>
             <div class="col-8">
-                <select id="cats" name="categories" class="form-control" asp-items="@(new SelectList(Model.Categories))" multiple multiselect-search="true">
+                <select id="cats" class="form-control" asp-items="@(searchCats)" asp-for="SearchCategories" multiple multiselect-search="true">
                 </select>
             </div>
             <div class="col-auto">

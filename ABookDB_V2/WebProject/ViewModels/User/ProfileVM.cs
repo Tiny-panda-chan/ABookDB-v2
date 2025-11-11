@@ -2,15 +2,11 @@
 {
     public class ProfileVM
     {
-        public int Id { get; set; }
-        public ProfileVM(int id) 
-        {
-            Id = id;
-        }
         public string Username { get; set; }
         public string Email { get; set; }
         //for password edit
-        public string Password { get; set; }
+        public string OldPassword { get; set; }
+        public string NewPassword { get; set; }
 
         public List<BookItem>? ReadBooks { get; set; }
 
@@ -19,11 +15,8 @@
             public int Id { get; set; }
             public string Name { get; set; }
             public int TotalPages { get; set; }
-            public int ReadPercentage
-            {
-                get { return ReadPercentage; }
-                set { ReadPercentage = (value % TotalPages) * 100; }
-            }
+            public int ReadToPage { get; set; }
+            public string ReadPercentage { get; set; }
 
         }
 

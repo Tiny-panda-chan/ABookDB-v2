@@ -68,8 +68,8 @@
                     @if (Model.BookCategories != null)
                     @foreach (var item in Model.BookCategories)
                     {
-                        <form asp-action="Index" method="get">
-                            @* <input type="text" name="categories" value="@(new List<string>() { item.ID.ToString() })" hidden /> *@
+                        <form asp-action="Index" method="post">
+                                <input type="text" asp-for="@new WebProject.ViewModels.Book.IndexVM().SearchCategories" value="@item" hidden />
                             <input type="submit" value="@item" class="mt-1" />
                         </form>
                     }
