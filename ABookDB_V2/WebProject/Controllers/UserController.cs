@@ -10,13 +10,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebProject.Helpers;
+using WebProject.Helpers.Interfaces;
 using WebProject.ModelTranslator;
 using WebProject.ViewModels.User;
 using static WebScraper.ScrapedFileModel;
 
 namespace WebProject.Controllers
 {
-    public class UserController(IModelTranslatorUser _translator, IStatusService _statusService) : Controller
+    [ValidateAntiForgeryToken]
+    public class UserController(IModelTranslatorUser _translator, IAuthHelper _auth) : Controller
     {
         [Authorize]
         [HttpGet]
@@ -49,8 +51,7 @@ namespace WebProject.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterVM registerVM)
         {
-            AuthHelper auth = new AuthHelper(_statusService);
-            await auth.RegisterUserAsync(HttpContext, registerVM);
+            await _auth.RegisterUserAsync(HttpContext, registerVM);
             return RedirectToAction("Index", "Book");
         }
 
@@ -63,8 +64,7 @@ namespace WebProject.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM loginVM)
         {
-            AuthHelper auth = new AuthHelper(_statusService);
-            var sucLogin = await auth.LoginUser(HttpContext, loginVM);
+            var sucLogin = await _auth.LoginUser(HttpContext, loginVM);
             if (sucLogin.Value)
             {
                 return RedirectToAction("Index", "Book");
@@ -84,12 +84,19 @@ namespace WebProject.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> AddOrUpdateReadBook(int bookId, int readToPage)
+        public async Task<IActionResult> AddOrUpdateReadBook(int? bookId, int? readToPage)
         {
-            var res = await _translator.SaveObjectAsync(new ReadBookVM() { BookID = bookId, ReadToPage = readToPage});
-            if (!res)
-                return BadRequest();
-            return RedirectToAction("Detail", "Book", new { id = bookId });
+            if (bookId == null || readToPage == null)
+            {
+                return RedirectToAction(nameof(BookController.Index), nameof(BookController));
+            }
+            else
+            {
+                var res = await _translator.SaveObjectAsync(new ReadBookVM() { BookID = (int)bookId, ReadToPage = (int)readToPage });
+                if (!res)
+                    return BadRequest();
+            }
+            return RedirectToAction(nameof(BookController.Detail), nameof(BookController), new { id = bookId });
         }
 
 

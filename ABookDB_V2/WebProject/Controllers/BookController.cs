@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WebProject.Controllers
 {
+    [ValidateAntiForgeryToken]
     public class BookController(IModelTranslatorBook _translator/*, IMapper _mapper*/) : Controller
     {
         [HttpGet]
@@ -25,24 +26,30 @@ namespace WebProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(IndexVM indexVM)
+        
+        public async Task<IActionResult> Index(IndexVM? indexVM)
         {
-            if (indexVM.SearchString == null && indexVM.SearchCategories == null)
+            if (indexVM?.SearchString == null && indexVM?.SearchCategories == null)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
+            } else
+            {
+                await _translator.FillObjectAsync(indexVM, indexVM.SearchString, indexVM.SearchCategories);
             }
 
-            await _translator.FillObjectAsync(indexVM, indexVM.SearchString, indexVM.SearchCategories);
+                
             return View(indexVM);
         }
 
-
-        public async Task<IActionResult> Detail(int id)
+        public IActionResult Detail(int? id)
         {
-            if (id == 0)
+            if (id == null ? true : id == 0)
                 throw new NotSupportedException();
-            DetailVM detailVM = new DetailVM(id);
-            return View(_translator.FillObjectAsync(detailVM).Result);
+            else
+            {
+                DetailVM detailVM = new DetailVM((int)id);
+                return View(_translator.FillObjectAsync(detailVM).Result);
+            }    
         }
         [Authorize]
         [HttpGet]
@@ -72,7 +79,7 @@ namespace WebProject.Controllers
         public async Task<IActionResult> Create(CreateVM createVM)
         {
             var createdBookId = await _translator.SaveObjectAsync(createVM);
-            return RedirectToAction("Detail", new { id = createdBookId });
+            return RedirectToAction(nameof(Detail), new { id = createdBookId });
         }
 
 
@@ -84,7 +91,7 @@ namespace WebProject.Controllers
             var res = await _translator.SaveObjectAsync(new ViewModels.Book.DeleteVM() { Id = id.Value });
             if (!res)
                 return BadRequest();
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         [Authorize]

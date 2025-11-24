@@ -1,4 +1,4 @@
-﻿namespace WebProject.Helpers
+﻿/*namespace WebProject.Helpers
 {
     public interface IStatusService
     {
@@ -24,4 +24,4 @@
 
         }
     }
-}
+}*/

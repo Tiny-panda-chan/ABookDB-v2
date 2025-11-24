@@ -9,7 +9,7 @@ namespace WebProject.ModelTranslator
     {
         //Books
         Task<IndexVM> FillObjectAsync(IndexVM obj);
-        Task<IndexVM> FillObjectAsync(IndexVM obj, string searchString, List<string> categories);
+        Task<IndexVM> FillObjectAsync(IndexVM obj, string? searchString, List<string>? categories);
         Task<DetailVM> FillObjectAsync(DetailVM obj);
         Task<EditVM> FillObjectAsync(EditVM obj);
         Task<ViewModels.Book.CreateVM> FillObjectAsync(ViewModels.Book.CreateVM obj);

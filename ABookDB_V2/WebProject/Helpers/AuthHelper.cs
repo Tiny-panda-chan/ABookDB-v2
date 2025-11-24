@@ -4,26 +4,20 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Models.Interfaces;
 using Models.Models;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
+using WebProject.Helpers.Interfaces;
 using WebProject.ViewModels.User;
 
 namespace WebProject.Helpers
 {
-    public class AuthHelper
+    public class AuthHelper(IUserRepository _userRepository) : IAuthHelper
     {
-
-        public AuthHelper(IStatusService status)
-        {
-            var ctx = status.GetService<ABookDBContext>();
-            repo = new UserRepository(ctx);
-
-        }
-        private UserRepository repo { get; set; }
         public async Task<bool?> LoginUser(HttpContext _httpContext, LoginVM user)
         {
-            UserModel? dbUser = await repo.GetByEmail(user.Email);
+            UserModel? dbUser = await _userRepository.GetByEmail(user.Email);
             if (dbUser == null)
             {
                 return false;
@@ -51,7 +45,7 @@ namespace WebProject.Helpers
 
         public async Task<UserModel> RegisterUserAsync(HttpContext _httpContext, RegisterVM user)
         {
-            if (await repo.GetByEmail(user.Email) != null)
+            if (await _userRepository.GetByEmail(user.Email) != null)
             {
                 return null;
             }
@@ -61,7 +55,7 @@ namespace WebProject.Helpers
             dbUser.Username = user.Username;
             dbUser.Email = user.Email;
             dbUser.RegistrationDate = DateTime.Now;
-            repo.Add(dbUser);
+            _userRepository.Add(dbUser);
 
             await LoginUser(_httpContext, new LoginVM() { Email = user.Email, Password = user.Password });
             return dbUser;

@@ -9,6 +9,7 @@ using WebProject.ModelTranslator;
 namespace WebProject.Controllers
 {
     [Authorize]
+    [ValidateAntiForgeryToken]
     public class CategoryController(IModelTranslatorCategory _translator, ABookDBContext _dbContext) : Controller
     {
         public async Task<IActionResult> AddCategory(string slist, string catName)
@@ -33,7 +34,7 @@ namespace WebProject.Controllers
             return PartialView("~/Views/Category/ListPV.cshtml", returnViewModel);
 
         }
-        public async Task<IActionResult> RemoveCategory(string catName)
+        public IActionResult RemoveCategory(string? catName)
         {
             //book.Book.Urls.Add(new BookUrl());
             //urls.RemoveAt(indexToRemove);//new List<BookUrl>() { new BookUrl { UrlValue = "sdlfk" }, new BookUrl { UrlValue = "123457" } };//.Add(new BookUrl());

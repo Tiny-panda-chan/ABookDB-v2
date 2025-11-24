@@ -2,6 +2,7 @@
 using DBService.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Models.Interfaces;
 using Models.Models;
 using Newtonsoft.Json.Linq;
 using WebProject.Helpers;
@@ -9,7 +10,10 @@ using WebProject.ViewModels.User;
 
 namespace WebProject.ModelTranslator
 {
-    public class ModelTranslatorUser(ABookDBContext _context, IStatusService _services, IHttpContextAccessor _httpContextAccesor) : ModelTranslatorParent(_httpContextAccesor, _context), IModelTranslatorUser
+    public class ModelTranslatorUser(ABookDBContext _context,
+        IHttpContextAccessor _httpContextAccesor,
+        IUserRepository _userRepository,
+        IBookRepository _bookRepository) : ModelTranslatorParent(_httpContextAccesor, _context, _userRepository), IModelTranslatorUser
     {
         //User
         public async Task<ProfileVM> FillObjectAsync(ProfileVM obj)
@@ -20,7 +24,7 @@ namespace WebProject.ModelTranslator
                 obj.Email = user.Email;
                 obj.Username = user.Username;
                 double pcr = (20d / 22d) * 100d;
-                obj.ReadBooks = (await UserRepository.GetAllReadBooksAsync(user))?.Select(u => new ViewModels.User.ProfileVM.BookItem()
+                obj.ReadBooks = (await _userRepository.GetAllReadBooksAsync(user))?.Select(u => new ViewModels.User.ProfileVM.BookItem()
                 {
                     Id = u.Id,
                     Name = u.Book.Name,
@@ -36,7 +40,7 @@ namespace WebProject.ModelTranslator
         public async Task<bool> SaveObjectAsync(ViewModels.User.ReadBookVM obj)
         {
             UserModel user = await GetUser();
-            BookModel book = await BookRepository.GetByIdAsync(obj.BookID);
+            BookModel book = await _bookRepository.GetByIdAsync(obj.BookID);
             if (book == null || user == null)
                 return false;
             ReadBooksModel rb = new ReadBooksModel();
@@ -44,7 +48,7 @@ namespace WebProject.ModelTranslator
             rb.User = user;
             rb.Page = obj.ReadToPage;
             rb.ReadStage = (obj.ReadToPage < book.TotalPages) ? ReadStage.InProgress : ReadStage.Finished;
-            UserRepository.AddOrUpdateReadBook(rb);
+            _userRepository.AddOrUpdateReadBook(rb);
             return true;
         }
 
@@ -64,7 +68,7 @@ namespace WebProject.ModelTranslator
             {
                 user.Email = obj.Email;
             }
-            UserRepository.Edit(user);
+            _userRepository.Edit(user);
             return true;
 
         }

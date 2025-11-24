@@ -5,6 +5,7 @@ using WebProject.ViewModels.Review;
 
 namespace WebProject.Controllers
 {
+    [ValidateAntiForgeryToken]
     public class ReviewController(IModelTranslatorReview _translator) : Controller
     {
         [Authorize]

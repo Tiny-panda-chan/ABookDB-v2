@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using DBService.Repositories;
+using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Models.Interfaces;
 using Models.Models;
 using System.Linq;
 using System.Security.Claims;
@@ -15,23 +17,29 @@ using static WebScraper.ScrapedFileModel;
 
 namespace WebProject.ModelTranslator
 {
-    public class ModelTranslatorBook(ABookDBContext _context, IStatusService _services, IHttpContextAccessor _httpContextAccesor) : ModelTranslatorParent(_httpContextAccesor, _context), IModelTranslatorBook
+    public class ModelTranslatorBook(ABookDBContext _context,
+        IStatusService _services,
+        IHttpContextAccessor _httpContextAccesor,
+        IBookRepository _bookRepository,
+        IUserRepository _userRepository,
+        ICategoryRepository _categoryRepository,
+        IAuthorRepository _authorRepository) : ModelTranslatorParent(_httpContextAccesor, _context, _userRepository), IModelTranslatorBook
     {
         //Books
         public async Task<IndexVM> FillObjectAsync(IndexVM obj)
         {
-            var books = await BookRepository.GetAllAsync();
+            var books = await _bookRepository.GetAllAsync();
             UserModel user = await GetUser();
             obj.BookList = books.Select(bl => new IndexVM.BookItem
             {
                 Id = bl.Id,
                 Title = bl.Name,
                 Description = bl.Description,
-                BookCategories = BookRepository.GetAllCategoriesAsync(bl).Result.Select(c => c.Name)?.ToList(),
+                BookCategories = _bookRepository.GetAllCategoriesAsync(bl).Result.Select(c => c.Name)?.ToList(),
                 CreatedById = bl.CreatedBy.Id,
-                UserProgress = (UserRepository.GetReadByBookId(user, bl.Id))?.Result?.ReadStage
+                UserProgress = (_userRepository.GetReadByBookId(user, bl.Id))?.Result?.ReadStage
             }).ToList();
-            obj.Categories = (await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
+            obj.Categories = (await _categoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
             return obj;
         }
 
@@ -41,33 +49,33 @@ namespace WebProject.ModelTranslator
             obj.BookList = new();
             if (searchString != null)
             {
-                var books = await BookRepository.GetAllAsyncByString(searchString);
+                var books = await _bookRepository.GetAllAsyncByString(searchString);
                 obj.BookList.AddRange(books.Select(bl => new IndexVM.BookItem
                 {
                     Id = bl.Id,
                     Title = bl.Name,
                     Description = bl.Description,
-                    BookCategories = BookRepository.GetAllCategoriesAsync(bl).Result.Select(c => c.Name)?.ToList(),
-                    CreatedById = bl.CreatedBy.Id,
-                    UserProgress = (UserRepository.GetReadByBookId(user, bl.Id))?.Result?.ReadStage
+                    BookCategories = _bookRepository.GetAllCategoriesAsync(bl)?.Result?.Select(c => c.Name)?.ToList(),
+                    CreatedById = bl.CreatedBy?.Id ?? 0,
+                    UserProgress = (_userRepository.GetReadByBookId(user, bl.Id))?.Result?.ReadStage
                 }).ToList());
             }
 
             if (categories != null)
             {
-                var books = await BookRepository.GetAllAsyncByCategories(categories);
+                var books = await _bookRepository.GetAllAsyncByCategories(categories);
                 obj.BookList?.AddRange(books.Select(bl => new IndexVM.BookItem
                 {
                     Id = bl.Id,
                     Title = bl.Name,
                     Description = bl.Description,
-                    BookCategories = bl.Categories.Select(c => c.Name)?.ToList(),//because cats are already included in getallasyncbycategories query
-                    CreatedById = bl.CreatedBy.Id,
-                    UserProgress = (UserRepository.GetReadByBookId(user, bl.Id))?.Result?.ReadStage
+                    BookCategories = bl.Categories?.Select(c => c.Name)?.ToList(),//because cats are already included in getallasyncbycategories query
+                    CreatedById = bl.CreatedBy?.Id ?? 0,
+                    UserProgress = (_userRepository.GetReadByBookId(user, bl.Id))?.Result?.ReadStage
                 }).ToList());
             }
             
-            obj.Categories = (await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
+            obj.Categories = (await _categoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
             return obj;
         }
 
@@ -75,17 +83,17 @@ namespace WebProject.ModelTranslator
 
         public async Task<DetailVM> FillObjectAsync(DetailVM obj)
         {
-            BookModel bk = await BookRepository.GetByIdAsync(obj._id);
+            BookModel bk = await _bookRepository.GetByIdAsync(obj._id);
             obj.Name = bk.Name;
             obj.Description = bk.Description;
-            obj.BookCategories = (await BookRepository.GetAllCategoriesAsync(bk))?.Select(bc => bc.Name).ToList();
-            obj.BookFiles = (await BookRepository.GetAllFilesAsync(bk))?.Select(bc => bc.Name).ToList();
+            obj.BookCategories = (await _bookRepository.GetAllCategoriesAsync(bk))?.Select(bc => bc.Name).ToList();
+            obj.BookFiles = (await _bookRepository.GetAllFilesAsync(bk))?.Select(bc => bc.Name).ToList();
             obj.TotalPages = bk.TotalPages;
             obj.CreatedDate = bk.CreatedOn;
             UserModel user = await GetUser();
             if (user != null)
             {
-                ReadBooksModel rbm = UserRepository.GetReadByBookId(user, obj._id)?.Result;
+                ReadBooksModel rbm = _userRepository.GetReadByBookId(user, obj._id)?.Result ?? new ReadBooksModel();
                 if (rbm != null)
                     obj.ReadToPage = rbm.Page;
             }
@@ -95,10 +103,10 @@ namespace WebProject.ModelTranslator
 
         public async Task<EditVM> FillObjectAsync(EditVM obj)
         {
-            BookModel bk = await BookRepository.GetByIdAsync(obj._id);
-            await BookRepository.GetAllCategoriesAsync(bk);
-            await BookRepository.GetAllFilesAsync(bk);
-            await BookRepository.GetAllUrlsAsync(bk);
+            BookModel bk = await _bookRepository.GetByIdAsync(obj._id);
+            await _bookRepository.GetAllCategoriesAsync(bk);
+            await _bookRepository.GetAllFilesAsync(bk);
+            await _bookRepository.GetAllUrlsAsync(bk);
             //obj = _mapper.Map<EditVM>(bk);
 
             return obj;
@@ -107,14 +115,14 @@ namespace WebProject.ModelTranslator
         public async Task<ViewModels.Book.CreateVM> FillObjectAsync(ViewModels.Book.CreateVM obj)
         {
             obj.CategoryCreateVM = await _services.GetService<IModelTranslatorCategory>().FillObjectAsync(new ViewModels.Category.CreateVM()); //= (await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
-            obj.AllAuthors = (await AuthorRepository.GetAllAsync()).Select(c => c.Name).ToList();
+            obj.AllAuthors = (await _authorRepository.GetAllAsync()).Select(c => c.Name).ToList();
             return obj;
         }
 
 
         public async Task<int> SaveObjectAsync(EditVM obj)
         {
-            BookModel bk = await BookRepository.GetByIdAsync(obj._id);
+            BookModel bk = await _bookRepository.GetByIdAsync(obj._id);
             //return saved object id for redirection
             return bk.Id;
         }
@@ -131,7 +139,7 @@ namespace WebProject.ModelTranslator
             {
                 if (bk.Categories == null)
                     bk.Categories = new List<CategoryModel>();
-                var dbCat = await CategoryRepository.GetByNameAsync(cat);
+                var dbCat = await _categoryRepository.GetByNameAsync(cat);
                 if (dbCat != null)
                     bk.Categories.Add(dbCat);
             }
@@ -155,7 +163,7 @@ namespace WebProject.ModelTranslator
                 }
             }
             bk.BookFiles = files;
-            BookRepository.Add(bk);
+            _bookRepository.Add(bk);
             //return saved object id for redirection
             return bk.Id;
         }
@@ -163,13 +171,13 @@ namespace WebProject.ModelTranslator
         public async Task<bool> SaveObjectAsync(ViewModels.Book.DeleteVM obj)
         {
             UserModel user = await GetUser();
-            BookModel book = await BookRepository.GetByIdAsync(obj.Id);
+            BookModel book = await _bookRepository.GetByIdAsync(obj.Id);
             if (book == null || user == null)
                 return false;
             if (book.CreatedBy != user)
                 return false;
 
-            BookRepository.Delete(book);
+            _bookRepository.Delete(book);
             return true;
         }
 
@@ -177,10 +185,10 @@ namespace WebProject.ModelTranslator
         {
             if (obj.FileName == null || obj.FileName.Length == 0 || bookId == null)
                 return obj;
-            BookModel book = await BookRepository.GetByIdAsync(bookId);
+            BookModel book = await _bookRepository.GetByIdAsync(bookId);
             if (book == null)
                 return obj;
-            FileModel fm = (await BookRepository.GetAllFilesAsync(book))?.FirstOrDefault(f => f.Name == obj.FileName);
+            FileModel fm = (await _bookRepository.GetAllFilesAsync(book))?.FirstOrDefault(f => f.Name == obj.FileName);
             if (fm != null)
                 obj.Data = fm.Data;
             return obj;

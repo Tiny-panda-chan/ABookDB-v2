@@ -1,16 +1,20 @@
 ﻿using AutoMapper;
 using DBService.Repositories;
+using Models.Interfaces;
 using Models.Models;
 using WebProject.Helpers;
 
 namespace WebProject.ModelTranslator
 {
-    public class ModelTranslatorCategory(ABookDBContext _context, IStatusService _services, IHttpContextAccessor _httpContextAccesor) : ModelTranslatorParent(_httpContextAccesor, _context), IModelTranslatorCategory
+    public class ModelTranslatorCategory(ABookDBContext _context,
+        IHttpContextAccessor _httpContextAccesor,
+        IUserRepository _userRepository,
+        ICategoryRepository _categoryRepository) : ModelTranslatorParent(_httpContextAccesor, _context, _userRepository), IModelTranslatorCategory
     {
         //Category
         public async Task<ViewModels.Category.CreateVM> FillObjectAsync(ViewModels.Category.CreateVM obj)
         {
-            obj.AllCategories = new((await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList());
+            obj.AllCategories = new((await _categoryRepository.GetAllAsync()).Select(c => c.Name).ToList());
             return obj;
         }
 
@@ -19,7 +23,7 @@ namespace WebProject.ModelTranslator
         {
             CategoryModel cm = new CategoryModel() { Name = obj.Name };
 
-            return CategoryRepository.Add(cm).GetValueOrDefault();
+            return _categoryRepository.Add(cm).GetValueOrDefault();
         }
     }
 }

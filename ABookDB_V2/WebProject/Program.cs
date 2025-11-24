@@ -1,8 +1,11 @@
 using DBService;
+using DBService.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.UserSecrets;
+using Models.Interfaces;
 using Models.Models;
 using WebProject.Helpers;
+using WebProject.Helpers.Interfaces;
 using WebProject.ModelTranslator;
 using WebProject.ViewModels.Book;
 namespace WebProject
@@ -23,12 +26,18 @@ namespace WebProject
             builder.Services.AddScoped<IModelTranslatorUser, ModelTranslator.ModelTranslatorUser>();
             builder.Services.AddScoped<IModelTranslatorCategory, ModelTranslator.ModelTranslatorCategory>();
             builder.Services.AddScoped<IModelTranslatorReview, ModelTranslator.ModelTranslatorReview>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+            builder.Services.AddScoped<IBookRepository, BookRepository>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddSingleton<IAuthHelper, AuthHelper>();
             /*builder.Services.AddAutoMapper(configuration =>
             {
                 configuration.CreateMap<BookModel, DetailVM>();
                 configuration.CreateMap<BookModel, EditVM>();
             });*/
-            builder.Services.AddScoped<IStatusService, StatusService>();
+            //builder.Services.AddScoped<IStatusService, StatusService>();
 
             builder.Services.AddAuthentication().AddCookie("authCookie", o =>
             {

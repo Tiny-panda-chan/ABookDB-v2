@@ -10,6 +10,7 @@ namespace Models.Interfaces
     public interface IUserRepository
     {
         Task<UserModel?> GetByIdAsync(int id);
+        Task<UserModel?> GetByEmail(string email);
         Task<IEnumerable<UserModel>> GetAllAsync();
         bool? Add(UserModel model);
         void Edit(UserModel model);
@@ -17,5 +18,6 @@ namespace Models.Interfaces
         Task<IEnumerable<ReadBooksModel>> GetAllReadBooksAsync(UserModel model);
         Task<IEnumerable<BookModel>> GetAllBookCreatedByAsync(UserModel model);
         void AddOrUpdateReadBook(ReadBooksModel model);
+        Task<ReadBooksModel?> GetReadByBookId(UserModel model, int bookId);
     }
 }
