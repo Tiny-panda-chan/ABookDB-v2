@@ -8,6 +8,7 @@ using Models.Interfaces;
 using Models.Models;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
+using WebProject.Consts;
 using WebProject.Helpers.Interfaces;
 using WebProject.ViewModels.User;
 
@@ -32,14 +33,14 @@ namespace WebProject.Helpers
                 new Claim(ClaimTypes.Name, dbUser.Username)
             };
 
-            var identity = new ClaimsIdentity(claims, "authCookie");
+            var identity = new ClaimsIdentity(claims, ConstanceHelper.AuthCookie);
             var principal = new ClaimsPrincipal(identity);
             var options = new AuthenticationProperties
             {
                 IsPersistent = user.RememberMe,
                 ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1)
             };
-            await _httpContext.SignInAsync("authCookie", principal, options);
+            await _httpContext.SignInAsync(ConstanceHelper.AuthCookie, principal, options);
             return true;
         }
 

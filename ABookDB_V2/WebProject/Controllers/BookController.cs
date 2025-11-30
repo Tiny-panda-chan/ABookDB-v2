@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WebProject.Controllers
 {
-    [ValidateAntiForgeryToken]
+    //[ValidateAntiForgeryToken]
     public class BookController(IModelTranslatorBook _translator/*, IMapper _mapper*/) : Controller
     {
         [HttpGet]
@@ -26,7 +26,7 @@ namespace WebProject.Controllers
         }
 
         [HttpPost]
-        
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(IndexVM? indexVM)
         {
             if (indexVM?.SearchString == null && indexVM?.SearchCategories == null)
@@ -62,6 +62,7 @@ namespace WebProject.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditVM editVM)
         {
             await _translator.SaveObjectAsync(editVM);
@@ -76,6 +77,7 @@ namespace WebProject.Controllers
         }
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateVM createVM)
         {
             var createdBookId = await _translator.SaveObjectAsync(createVM);
@@ -84,6 +86,7 @@ namespace WebProject.Controllers
 
 
         [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -95,6 +98,7 @@ namespace WebProject.Controllers
         }
 
         [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Download(int bookId, string fileName)
         {
             DownloadFileVM dfvm = await _translator.FillObjectAsync(bookId, new DownloadFileVM() { FileName = fileName });

@@ -3,6 +3,7 @@ using DBService.Repositories;
 using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Models.Interfaces;
 using Models.Models;
@@ -18,7 +19,6 @@ using static WebScraper.ScrapedFileModel;
 namespace WebProject.ModelTranslator
 {
     public class ModelTranslatorBook(ABookDBContext _context,
-        IStatusService _services,
         IHttpContextAccessor _httpContextAccesor,
         IBookRepository _bookRepository,
         IUserRepository _userRepository,
@@ -114,7 +114,7 @@ namespace WebProject.ModelTranslator
 
         public async Task<ViewModels.Book.CreateVM> FillObjectAsync(ViewModels.Book.CreateVM obj)
         {
-            obj.CategoryCreateVM = await _services.GetService<IModelTranslatorCategory>().FillObjectAsync(new ViewModels.Category.CreateVM()); //= (await CategoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
+            obj.CategoryCreateVM = new() { AllCategories = new SelectList((_categoryRepository.GetAllAsync().Result).Select(c => c.Name).ToList()) };
             obj.AllAuthors = (await _authorRepository.GetAllAsync()).Select(c => c.Name).ToList();
             return obj;
         }
@@ -135,7 +135,7 @@ namespace WebProject.ModelTranslator
             bk.Description = obj.Description;
             bk.CreatedBy = await GetUser();
             
-            foreach (var cat in obj.SelectedCategories ?? new List<string>())
+            foreach (var cat in obj.CategoryCreateVM.SelectedCategories ?? new List<string>())
             {
                 if (bk.Categories == null)
                     bk.Categories = new List<CategoryModel>();

@@ -7,5 +7,6 @@ namespace WebProject.ViewModels.Category
         public string Name { get; set; }
 
         public SelectList AllCategories { get; set; }
+        public List<string>? SelectedCategories { get; set; }
     }
 }

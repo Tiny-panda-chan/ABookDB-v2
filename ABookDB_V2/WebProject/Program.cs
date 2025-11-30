@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Models.Interfaces;
 using Models.Models;
+using WebProject.Consts;
 using WebProject.Helpers;
 using WebProject.Helpers.Interfaces;
 using WebProject.ModelTranslator;
@@ -31,7 +32,7 @@ namespace WebProject
             builder.Services.AddScoped<IBookRepository, BookRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-            builder.Services.AddSingleton<IAuthHelper, AuthHelper>();
+            builder.Services.AddScoped<IAuthHelper, AuthHelper>();
             /*builder.Services.AddAutoMapper(configuration =>
             {
                 configuration.CreateMap<BookModel, DetailVM>();
@@ -39,11 +40,11 @@ namespace WebProject
             });*/
             //builder.Services.AddScoped<IStatusService, StatusService>();
 
-            builder.Services.AddAuthentication().AddCookie("authCookie", o =>
+            builder.Services.AddAuthentication().AddCookie(ConstanceHelper.AuthCookie, o =>
             {
                 o.LoginPath = "/User/Login";
                 o.AccessDeniedPath = "/User/Naah";
-                o.Cookie.Name = "authCookie";
+                o.Cookie.Name = ConstanceHelper.AuthCookie;
             });
             builder.Services.AddAuthorization();
             

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebProject.Consts;
 using WebProject.Helpers;
 using WebProject.Helpers.Interfaces;
 using WebProject.ModelTranslator;
@@ -17,7 +18,6 @@ using static WebScraper.ScrapedFileModel;
 
 namespace WebProject.Controllers
 {
-    [ValidateAntiForgeryToken]
     public class UserController(IModelTranslatorUser _translator, IAuthHelper _auth) : Controller
     {
         [Authorize]
@@ -29,6 +29,7 @@ namespace WebProject.Controllers
         }
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeEmail(ProfileVM profileVM)
         {
             var res = await _translator.SaveObjectAsync(profileVM);
@@ -36,6 +37,7 @@ namespace WebProject.Controllers
         }
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ProfileVM profileVM)
         {
             var res = await _translator.SaveObjectAsync(profileVM);
@@ -49,6 +51,7 @@ namespace WebProject.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterVM registerVM)
         {
             await _auth.RegisterUserAsync(HttpContext, registerVM);
@@ -62,6 +65,7 @@ namespace WebProject.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginVM loginVM)
         {
             var sucLogin = await _auth.LoginUser(HttpContext, loginVM);
@@ -78,12 +82,13 @@ namespace WebProject.Controllers
         [Authorize]
         public async Task<IActionResult> LogOut()
         {
-            await HttpContext.SignOutAsync("authCookie");
+            await HttpContext.SignOutAsync(ConstanceHelper.AuthCookie);
             return RedirectToAction("Index", "Book");
         }
 
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddOrUpdateReadBook(int? bookId, int? readToPage)
         {
             if (bookId == null || readToPage == null)

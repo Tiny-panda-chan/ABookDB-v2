@@ -1,6 +1,6 @@
-﻿@model WebProject.ViewModels.Book.CreateVM
+﻿@model WebProject.ViewModels.Category.CreateVM//WebProject.ViewModels.Book.CreateVM
 @{
-    SelectList cats = Model.CategoryCreateVM.AllCategories;
+    /*SelectList cats = Model.AllCategories;
     if (Model != null ? Model.SelectedCategories != null : false)
     {
         foreach (var item in cats)
@@ -11,22 +11,65 @@
             }
         }
 
-    }
+    }*/
 }
 
-<label asp-for="@Model.CategoryCreateVM.AllCategories" class="control-label"></label>
-<select id="cats" asp-for="@Model.SelectedCategories" class="form-control" asp-items="@(cats)" multiple multiselect-search="true">
+<label asp-for="@Model.AllCategories" class="control-label"></label>
+<select id="cats" asp-for="@Model.SelectedCategories" class="form-control" asp-items="@(Model.AllCategories)" multiple multiselect-search="true">
 </select>
-<span asp-validation-for="@Model.CategoryCreateVM.AllCategories" class="text-danger"></span>
+<span asp-validation-for="@Model.AllCategories" class="text-danger"></span>
 <input type="button" onclick="$('#AddCategoryModal').modal('show')" class="btn btn-secondary w-100 mt-2" value="Add category" />
+
+<div class="modal fade" id="AddCategoryModal" tabindex="-1" role="dialog" aria-labelledby="AddCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddCategoryModalLabel">Add Category</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="newCatName" autocomplete="off" />
+                    @* <input asp-for=  type="text" class="form-control" required="required" name="newCat" /> *@
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="$('#AddCategoryModal').modal('hide')">Close</button>
+                <button type="button" class="btn btn-primary" onclick="AddCategory()">Add category</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     function AddCategory() {
-            console.log($('#catName'));
+        var select = document.getElementById('cats');
+        var opt = document.createElement('option');
+        opt.value = $('#newCatName').val();
+        opt.innerHTML = $('#newCatName').val();
+        select.appendChild(opt);
+        $('#AddCategoryModal').modal('hide');
+        document.getElementById('newCatName').value = '';
+        [...document.getElementsByClassName("multiselect-dropdown")].map(n => n && n.remove());
+        MultiselectDropdown(window.MultiselectDropdownOptions);
+        //Model.AllCategories.Append(new SelectListItem() { Text = $('#newCatName').val()});
+            /*console.log($('#newCatName').val());
+            var formData = new FormData();
+            formData.append("SelectedCategories", $('#cats').val());
+            formData.append("Name", $('#newCatName').val());
+            console.log(formData);
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            console.log("token" + token);
             $.ajax({
                 async: true,
-                data: "slist=" + $('#cats').val() + "&catName=" + document.getElementById("catName").value,
+                data: "__RequestVerificationToken=" + token + "&data=" + formData,
                 type: "POST",
+                processData: false,
+                contentType: false,
                 url: '/Category/AddCategory',
                 success: function (partialView) {
                     console.log("partialView: " + partialView);
@@ -34,6 +77,6 @@
                     $('#AddCategoryModal').modal('hide');
                     MultiselectDropdown(window.MultiselectDropdownOptions);
                 }
-            });
+            });*/
         }
 </script>
