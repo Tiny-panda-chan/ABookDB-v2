@@ -10,11 +10,13 @@ namespace WebProject.ViewModels.Book
         {
             _id = Id;
         }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; } = "";
+        public string Description { get; set; } = "";
         public int TotalPages { get; set; }
         public List<string>? Categories { get; set; }
         public List<string>? Urls { get; set; }
         public ICollection<FileModel>? BookFiles { get; set; }
+        public IFormFileCollection? UploadedFiles { get; set; }
+        public ViewModels.Category.CreateVM CategoryCreateVM { get; set; } = new();
     }
 }

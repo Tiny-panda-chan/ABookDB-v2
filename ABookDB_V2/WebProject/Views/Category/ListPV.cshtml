@@ -15,7 +15,7 @@
 }
 
 <label asp-for="@Model.AllCategories" class="control-label"></label>
-<select id="cats" asp-for="@Model.SelectedCategories" class="form-control" asp-items="@(Model.AllCategories)" multiple multiselect-search="true">
+<select id="cats" asp-for="@Model.SelectedCategories" name="CategoryCreateVM.SelectedCategories" class="form-control" asp-items="@(Model.AllCategories)" multiple multiselect-search="true">
 </select>
 <span asp-validation-for="@Model.AllCategories" class="text-danger"></span>
 <input type="button" onclick="$('#AddCategoryModal').modal('show')" class="btn btn-secondary w-100 mt-2" value="Add category" />

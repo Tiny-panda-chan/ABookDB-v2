@@ -57,7 +57,9 @@ namespace WebProject.Controllers
         {
             if (id == 0)
                 throw new NotSupportedException();
-            return View(await _translator.FillObjectAsync(new EditVM(id)));
+
+            EditVM editVM = await _translator.FillObjectAsync(new EditVM(id));
+            return View(editVM);
         }
 
         [Authorize]

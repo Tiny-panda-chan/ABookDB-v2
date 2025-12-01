@@ -15,7 +15,7 @@ namespace WebProject.ViewModels.Book
 
 
         //public List<string>? AllCategories { get; set; }
-        public ViewModels.Category.CreateVM CategoryCreateVM { get; set; }
+        public ViewModels.Category.CreateVM CategoryCreateVM { get; set; } = new();
         public List<string>? AllAuthors { get; set; }
     }
 }

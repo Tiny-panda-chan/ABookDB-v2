@@ -32,6 +32,7 @@ namespace WebProject
             builder.Services.AddScoped<IBookRepository, BookRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<IUrlRepository, UrlRepository>();
             builder.Services.AddScoped<IAuthHelper, AuthHelper>();
             /*builder.Services.AddAutoMapper(configuration =>
             {

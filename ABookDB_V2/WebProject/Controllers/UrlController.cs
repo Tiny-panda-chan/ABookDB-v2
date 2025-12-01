@@ -9,15 +9,13 @@ namespace WebProject.Controllers
         public IActionResult AddUrl([Bind("Urls")] List<string> urls)
         {
             urls.Add("");
-            ViewModels.Book.CreateVM bookvm = new ViewModels.Book.CreateVM() { Urls = urls };
-            return PartialView("~/Views/Url/CreatePV.cshtml", bookvm);
+            return PartialView("~/Views/Url/CreatePV.cshtml", urls);
 
         }
         public IActionResult RemoveUrl([Bind("Urls")] List<string> urls, int indexToRemove)
         {
             urls.RemoveAt(indexToRemove);
-            ViewModels.Book.CreateVM bookvm = new ViewModels.Book.CreateVM() { Urls = urls };
-            return PartialView("~/Views/Url/CreatePV.cshtml", bookvm);
+            return PartialView("~/Views/Url/CreatePV.cshtml", urls);
 
         }
         [Authorize]

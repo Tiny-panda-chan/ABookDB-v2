@@ -11,10 +11,8 @@ namespace DBService.Repositories
 {
     public class CategoryRepository : Repository<CategoryModel>, Models.Interfaces.ICategoryRepository
     {
-        private readonly ABookDBContext _context;
         public CategoryRepository(ABookDBContext context) : base(context)
         {
-            _context = context;
         }
 
         public async Task<IEnumerable<CategoryModel>> GetAllAsync()

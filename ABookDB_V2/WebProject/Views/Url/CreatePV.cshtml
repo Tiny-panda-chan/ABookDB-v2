@@ -1,19 +1,19 @@
-﻿@model WebProject.ViewModels.Book.CreateVM
+﻿@model List<string>
 @using System.Net;
 @{
     Layout = "";
 }
-@for (int i = 0; i < Model.Urls?.Count(); i++)
+@for (int i = 0; i < Model?.Count(); i++)
 {
     <div class="row">
         <div class="form-group col-8">
             <label class="control-label">Url @((i + 1).ToString())</label>
-            <input onblur="ValidateUrl(`@i.ToString()`)" id="urlEditor@(i)" asp-for="@Model.Urls[i]" class="form-control" value="@Model.Urls[i]" autocomplete="off" />
-            <span asp-validation-for="@Model.Urls[i]" class="text-danger"></span>
+            <input onblur="ValidateUrl(`@i.ToString()`)" id="urlEditor@(i)" asp-for="@Model[i]" name="Urls[@i]" class="form-control" value="@Model[i]" autocomplete="off" />
+            <span asp-validation-for="@Model[i]" class="text-danger"></span>
         </div>
         <div class="col-4 d-flex align-items-end">
             <div class="row">
-                @if (i + 1 == Model.Urls.Count())
+                @if (i + 1 == Model.Count())
                 {
                     <div class="col align-content-end">
                         <input class="btn btn-secondary" onclick="AddUrl()" type="button" id="btnAdd" value="Add url" />

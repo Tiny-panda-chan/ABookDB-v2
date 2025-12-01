@@ -11,13 +11,11 @@ namespace DBService.Repositories
 {
     public class BookRepository : Repository<BookModel>, Models.Interfaces.IBookRepository
     {
-        private readonly ABookDBContext _context;
         public BookRepository(ABookDBContext context) : base(context)
         {
-            _context = context;
         }
 
-        public async Task<BookModel?> GetByIdAsync(int id)
+        public new async Task<BookModel?> GetByIdAsync(int id)
         {
             return await _context.Books.Include(c => c.CreatedBy).Include(a => a.Author).SingleOrDefaultAsync(b => b.Id == id);
         }

@@ -10,10 +10,8 @@ namespace DBService.Repositories
 {
     public class AuthorRepository : Repository<AuthorModel>, Models.Interfaces.IAuthorRepository
     {
-        private readonly ABookDBContext _context;
         public AuthorRepository(ABookDBContext context) : base(context)
         {
-            _context = context;
         }
 
         public async Task<IEnumerable<AuthorModel>> GetAllAsync()

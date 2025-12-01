@@ -11,10 +11,8 @@ namespace DBService.Repositories
 {
     public class UserRepository : Repository<UserModel>, Models.Interfaces.IUserRepository
     {
-        private readonly ABookDBContext _context;
         public UserRepository(ABookDBContext context) : base(context)
         {
-            _context = context;
         }
 
         public async Task<UserModel?> GetByEmail(string email)
