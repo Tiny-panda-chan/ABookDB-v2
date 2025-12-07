@@ -11,24 +11,24 @@ namespace WebProject.ModelTranslator
         IHttpContextAccessor _httpContextAccesor,
         IBookRepository _bookRepository,
         IUserRepository _userRepository,
-        IReviewRepository _reviewRepository) : ModelTranslatorParent(_httpContextAccesor, _context, _userRepository), IModelTranslatorReview
+        IReviewRepository _reviewRepository) : ModelTranslatorParent(_httpContextAccesor, _userRepository), IModelTranslatorReview
     {
         //Review
         public async Task<ListVM> FillObjectAsync(ListVM obj)
         {
-            BookModel bk = await _bookRepository.GetByIdAsync(obj._id);
+            BookModel? bk = await _bookRepository.GetByIdAsync(obj._id);
             if (bk == null)
-                return null;
+                return new ListVM(0);
             await _bookRepository.GetAllReviewsAsync(bk);
             if (bk.Reviews == null)
-                return null;
+                return new ListVM(0);
             obj.ReviewItems = bk.Reviews.Select(c => new ListVM.ReviewItem() { TextContent = c.Text, CreatedBy = c.createdBy.Username, CreatedOn = c.createdOn }).ToList();
             return obj;
         }
 
         public async Task<int> SaveObjectAsync(ViewModels.Review.CreateVM obj)
         {
-            BookModel bk = await _bookRepository.GetByIdAsync(obj.BookId);
+            BookModel? bk = await _bookRepository.GetByIdAsync(obj.BookId);
             if (bk == null)
                 return 0;
             UserModel user = await GetUser();

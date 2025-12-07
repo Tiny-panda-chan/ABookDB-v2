@@ -13,7 +13,7 @@ namespace WebProject.ModelTranslator
     public class ModelTranslatorUser(ABookDBContext _context,
         IHttpContextAccessor _httpContextAccesor,
         IUserRepository _userRepository,
-        IBookRepository _bookRepository) : ModelTranslatorParent(_httpContextAccesor, _context, _userRepository), IModelTranslatorUser
+        IBookRepository _bookRepository) : ModelTranslatorParent(_httpContextAccesor, _userRepository), IModelTranslatorUser
     {
         //User
         public async Task<ProfileVM> FillObjectAsync(ProfileVM obj)
@@ -23,7 +23,6 @@ namespace WebProject.ModelTranslator
             {
                 obj.Email = user.Email;
                 obj.Username = user.Username;
-                double pcr = (20d / 22d) * 100d;
                 obj.ReadBooks = (await _userRepository.GetAllReadBooksAsync(user))?.Select(u => new ViewModels.User.ProfileVM.BookItem()
                 {
                     Id = u.Id,
@@ -40,7 +39,7 @@ namespace WebProject.ModelTranslator
         public async Task<bool> SaveObjectAsync(ViewModels.User.ReadBookVM obj)
         {
             UserModel user = await GetUser();
-            BookModel book = await _bookRepository.GetByIdAsync(obj.BookID);
+            BookModel? book = await _bookRepository.GetByIdAsync(obj.BookID);
             if (book == null || user == null)
                 return false;
             ReadBooksModel rb = new ReadBooksModel();
@@ -57,7 +56,7 @@ namespace WebProject.ModelTranslator
             UserModel user = await GetUser();
 
             if (user == null) return false;
-            if (obj.NewPassword != null || obj.OldPassword != null)
+            if (obj.NewPassword != null && obj.OldPassword != null)
             {
                 if (new PasswordHasher<UserModel>().VerifyHashedPassword(user, user.Password, obj.OldPassword) == PasswordVerificationResult.Failed)
                     return false;

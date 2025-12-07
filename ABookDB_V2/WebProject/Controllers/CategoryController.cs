@@ -9,9 +9,9 @@ using WebProject.ModelTranslator;
 
 namespace WebProject.Controllers
 {
-    [Authorize]
+    /*[Authorize]
     public class CategoryController(IModelTranslatorCategory _translator, ABookDBContext _dbContext) : Controller
-    {
+    {*/
         /*public async Task<IActionResult> AddCategory(string slist, string catName)
         {
             var res = await _translator.SaveObjectAsync(new ViewModels.Category.CreateVM() { Name = catName });
@@ -59,5 +59,5 @@ namespace WebProject.Controllers
             return Ok();
 
         }*/
-    }
+    //}
 }

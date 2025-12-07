@@ -9,7 +9,7 @@ namespace WebProject.ModelTranslator
     public class ModelTranslatorCategory(ABookDBContext _context,
         IHttpContextAccessor _httpContextAccesor,
         IUserRepository _userRepository,
-        ICategoryRepository _categoryRepository) : ModelTranslatorParent(_httpContextAccesor, _context, _userRepository), IModelTranslatorCategory
+        ICategoryRepository _categoryRepository) : ModelTranslatorParent(_httpContextAccesor, _userRepository), IModelTranslatorCategory
     {
         //Category
         public async Task<ViewModels.Category.CreateVM> FillObjectAsync(ViewModels.Category.CreateVM obj)
@@ -19,7 +19,7 @@ namespace WebProject.ModelTranslator
         }
 
 
-        public async Task<bool> SaveObjectAsync(ViewModels.Category.CreateVM obj)
+        public bool SaveObject(ViewModels.Category.CreateVM obj)
         {
             CategoryModel cm = new CategoryModel() { Name = obj.Name };
 

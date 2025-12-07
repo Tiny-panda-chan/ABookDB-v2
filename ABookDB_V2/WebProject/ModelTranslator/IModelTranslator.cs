@@ -36,6 +36,6 @@ namespace WebProject.ModelTranslator
     {
         //Category
         Task<ViewModels.Category.CreateVM> FillObjectAsync(ViewModels.Category.CreateVM obj);
-        Task<bool> SaveObjectAsync(ViewModels.Category.CreateVM obj);
+        bool SaveObject(ViewModels.Category.CreateVM obj);
     }
 }

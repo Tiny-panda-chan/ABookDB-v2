@@ -24,7 +24,7 @@ namespace WebProject.ModelTranslator
         IUserRepository _userRepository,
         ICategoryRepository _categoryRepository,
         IAuthorRepository _authorRepository,
-        IUrlRepository _urlRepository) : ModelTranslatorParent(_httpContextAccesor, _context, _userRepository), IModelTranslatorBook
+        IUrlRepository _urlRepository) : ModelTranslatorParent(_httpContextAccesor, _userRepository), IModelTranslatorBook
     {
         //Books
         public async Task<IndexVM> FillObjectAsync(IndexVM obj)
@@ -36,15 +36,15 @@ namespace WebProject.ModelTranslator
                 Id = bl.Id,
                 Title = bl.Name,
                 Description = bl.Description,
-                BookCategories = _bookRepository.GetAllCategoriesAsync(bl).Result.Select(c => c.Name)?.ToList(),
-                CreatedById = bl.CreatedBy.Id,
+                BookCategories = _bookRepository.GetAllCategoriesAsync(bl)?.Result?.Select(c => c.Name)?.ToList() ?? new List<string>(),
+                CreatedById = bl.CreatedBy?.Id ?? 0,
                 UserProgress = (_userRepository.GetReadByBookId(user, bl.Id))?.Result?.ReadStage
             }).ToList();
             obj.Categories = (await _categoryRepository.GetAllAsync()).Select(c => c.Name).ToList();
             return obj;
         }
 
-        public async Task<IndexVM> FillObjectAsync(IndexVM obj, string searchString, List<string> categories)
+        public async Task<IndexVM> FillObjectAsync(IndexVM obj, string? searchString, List<string>? categories)
         {
             UserModel user = await GetUser();
             obj.BookList = new();
@@ -56,7 +56,7 @@ namespace WebProject.ModelTranslator
                     Id = bl.Id,
                     Title = bl.Name,
                     Description = bl.Description,
-                    BookCategories = _bookRepository.GetAllCategoriesAsync(bl)?.Result?.Select(c => c.Name)?.ToList(),
+                    BookCategories = _bookRepository.GetAllCategoriesAsync(bl)?.Result?.Select(c => c.Name)?.ToList() ?? new List<string>(),
                     CreatedById = bl.CreatedBy?.Id ?? 0,
                     UserProgress = (_userRepository.GetReadByBookId(user, bl.Id))?.Result?.ReadStage
                 }).ToList());
@@ -70,7 +70,7 @@ namespace WebProject.ModelTranslator
                     Id = bl.Id,
                     Title = bl.Name,
                     Description = bl.Description,
-                    BookCategories = bl.Categories?.Select(c => c.Name)?.ToList(),//because cats are already included in getallasyncbycategories query
+                    BookCategories = bl.Categories?.Select(c => c.Name)?.ToList() ?? new List<string>(),//because cats are already included in getallasyncbycategories query
                     CreatedById = bl.CreatedBy?.Id ?? 0,
                     UserProgress = (_userRepository.GetReadByBookId(user, bl.Id))?.Result?.ReadStage
                 }).ToList());
@@ -84,21 +84,24 @@ namespace WebProject.ModelTranslator
 
         public async Task<DetailVM> FillObjectAsync(DetailVM obj)
         {
-            BookModel bk = await _bookRepository.GetByIdAsync(obj._id);
-            obj.Name = bk.Name;
-            obj.Description = bk.Description;
-            obj.BookCategories = (await _bookRepository.GetAllCategoriesAsync(bk))?.Select(bc => bc.Name).ToList();
-            obj.BookFiles = (await _bookRepository.GetAllFilesAsync(bk))?.Select(bc => bc.Name).ToList();
-            obj.TotalPages = bk.TotalPages;
-            obj.CreatedDate = bk.CreatedOn;
-            UserModel user = await GetUser();
-            if (user != null)
+            BookModel? bk = await _bookRepository.GetByIdAsync(obj._id);
+            if (bk != null)
             {
-                ReadBooksModel rbm = _userRepository.GetReadByBookId(user, obj._id)?.Result ?? new ReadBooksModel();
-                if (rbm != null)
-                    obj.ReadToPage = rbm.Page;
+                obj.Name = bk.Name;
+                obj.Description = bk.Description;
+                obj.BookCategories = (await _bookRepository.GetAllCategoriesAsync(bk))?.Select(bc => bc.Name).ToList() ?? new List<string>();
+                obj.BookFiles = (await _bookRepository.GetAllFilesAsync(bk))?.Select(bc => bc.Name).ToList() ?? new List<string>();
+                obj.TotalPages = bk.TotalPages;
+                obj.CreatedDate = bk.CreatedOn;
+                UserModel user = await GetUser();
+                if (user != null)
+                {
+                    ReadBooksModel rbm = _userRepository.GetReadByBookId(user, obj._id)?.Result ?? new ReadBooksModel();
+                    if (rbm != null)
+                        obj.ReadToPage = rbm.Page;
+                }
+                //obj = _mapper.Map<DetailVM>(bk);
             }
-            //obj = _mapper.Map<DetailVM>(bk);
             return obj;
         }
 
@@ -217,8 +220,7 @@ namespace WebProject.ModelTranslator
             if (book == null)
                 return obj;
             FileModel? fm = (await _bookRepository.GetAllFilesAsync(book))?.FirstOrDefault(f => f.Name == obj.FileName);
-            if (fm != null ? fm.Data != null : true)
-                obj.Data = fm.Data;
+            obj.Data = fm?.Data ?? [];
             return obj;
         }
     }

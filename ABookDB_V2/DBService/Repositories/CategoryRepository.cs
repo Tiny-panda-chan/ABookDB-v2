@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Models.Interfaces;
 using Models.Models;
 using System;
@@ -22,7 +23,7 @@ namespace DBService.Repositories
 
         public async Task<IEnumerable<BookModel>> GetAllBooksInCategory(CategoryModel model)
         {
-            return await _context.Books.Include(u => u.Categories).Where(b => b.Categories.Any(c => c == model)).ToListAsync();
+            return await _context.Books.Include(u => u.Categories).SkipWhile(ec => ec.Categories.IsNullOrEmpty()).Where(b => b.Categories.Any(c => c == model)).ToListAsync();
         }
 
         public async Task<CategoryModel?> GetByNameAsync(string name)

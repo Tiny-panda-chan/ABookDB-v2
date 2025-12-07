@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 namespace WebProject.ModelTranslator
 {
-    public abstract class ModelTranslatorParent(IHttpContextAccessor _httpContextAccesor, ABookDBContext _context, IUserRepository _userRepository)
+    public abstract class ModelTranslatorParent(IHttpContextAccessor _httpContextAccesor, IUserRepository _userRepository)
     {
         /*protected AuthorRepository AuthorRepository = new AuthorRepository(_context);
         protected BookRepository BookRepository = new BookRepository(_context);

@@ -32,39 +32,59 @@ namespace DBService.Repositories
 
         public async Task<IEnumerable<BookModel>> GetAllAsyncByCategories(List<string> searchCategories)
         {
-            return await _context.Books.Include(u => u.CreatedBy).Include(c => c.Categories).Include(a => a.Author).Where(b => b.Categories.Any(c => searchCategories.Contains(c.Name))).ToListAsync();
+            return await _context.Books.Include(u => u.CreatedBy).Include(c => c.Categories).Include(a => a.Author).Where(b => !b.Categories.IsNullOrEmpty() ? b.Categories.Any(c => searchCategories.Contains(c.Name)) : false).ToListAsync();
         }
 
         public async Task<IEnumerable<CategoryModel>?> GetAllCategoriesAsync(BookModel model)
         {
-            await _context.Entry(model).Collection(c => c.Categories).LoadAsync();
-            if (model.Categories is null)
+            try
+            {
+                await _context.Entry(model).Collection(c => c.Categories).LoadAsync();
+                return model.Categories;
+            }
+            catch (Exception)
+            {
                 return new List<CategoryModel>();
-            return model.Categories;
+            }
         }
 
         public async Task<IEnumerable<FileModel>?> GetAllFilesAsync(BookModel model)
         {
-            await _context.Entry(model).Collection(c => c.BookFiles).LoadAsync();
-            if (model.BookFiles is null)
+            try
+            {
+                await _context.Entry(model).Collection(c => c.BookFiles).LoadAsync();
+                return model.BookFiles;
+            }
+            catch (Exception)
+            {
                 return new List<FileModel>();
-            return model.BookFiles;
+            }
         }
 
         public async Task<IEnumerable<ReviewModel>?> GetAllReviewsAsync(BookModel model)
         {
-            await _context.Entry(model).Collection(c => c.Reviews).Query().Include(u => u.createdBy).LoadAsync();
-            if (model.Reviews is null)
+            try
+            {
+                await _context.Entry(model).Collection(c => c.Reviews).Query().Include(u => u.createdBy).LoadAsync();
+                return model.Reviews;
+            }
+            catch (Exception)
+            {
                 return new List<ReviewModel>();
-            return model.Reviews;
+            }
         }
 
         public async Task<IEnumerable<UrlModel>?> GetAllUrlsAsync(BookModel model)
         {
-            await _context.Entry(model).Collection(c => c.Urls).LoadAsync();
-            if (model.Urls is null)
+            try
+            {
+                await _context.Entry(model).Collection(c => c.Urls).LoadAsync();
+                return model.Urls;
+            }
+            catch (Exception)
+            {
                 return new List<UrlModel>();
-            return model.Urls;
+            }
         }
 
 
