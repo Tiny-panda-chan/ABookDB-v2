@@ -3,9 +3,7 @@
 @{
     ViewData["Title"] = @Model.Name + " detail";
 }
-
-
-
+@Html.AntiForgeryToken()
 
 
 <div class="container">
@@ -99,26 +97,34 @@
     </div>
     <div class="row">
         <div>
+
             @{
                 if (Model.BookUrls?.Count > 0)
                 {
                     <table class="justify-content-start col-auto">
                         <tr>
-                            <th>Url</th>
-                            <th>Working</th>
+                            <th>
+                                <h4>Urls:</h4>
+                            </th>
                         </tr>
                         @foreach (var item in Model.BookUrls)
                         {
 
                             <tr>
                                 <td>
-                                    <a href="@item" target="_blank">@item</a>
+                                    @{
+                                        if (item.IsWorking)
+                                        {
+                                            <a href="@item.UrlAddress" target="_blank">@item.UrlAddress</a>
+                                        }
+                                        else
+                                        {
+                                            <p>@item.UrlAddress</p>
+                                        }
+                                        
+                                    }
                                 </td>
-                                @{
-                                    <td class="p-2">
-                                    </td>
-
-                                }
+                                
                             </tr>
 
                         }
@@ -149,7 +155,9 @@
                     foreach (var item in Model.BookFiles)
                     {
                         <div class="justify-content-start">
-                            <a asp-action="Download" asp-route-bookId="@Model._id" asp-route-fileName="@item">@item</a>
+                            <a id="hej" asp-action="Download"
+                               asp-route-bookId="@Model._id"
+                               asp-route-fileName="@item">@item</a>
                         </div>
                     }
 
@@ -180,7 +188,7 @@
         function AddToRead() {
             $.ajax({
                 async: true,
-                data: "bookId=" + @Model._id.ToString() + "&readToPage=" + document.getElementById("readToPage").value,
+                data: "bookId=" + @Model._id.ToString() + "&readToPage=" + document.getElementById("readToPage").value+ "&__RequestVerificationToken=" + $('input[name="__RequestVerificationToken"]').val(),
                 type: "POST",
                 url: '/User/AddOrUpdateReadBook',
                 success: function (res) {
@@ -192,7 +200,7 @@
         function UpdateRead() {
             $.ajax({
                 async: true,
-                data: "bookId=" + @Model._id.ToString() + "&readToPage=" + document.getElementById("updateReadToPage").value,
+                data: "bookId=" + @Model._id.ToString() + "&readToPage=" + document.getElementById("updateReadToPage").value + "&__RequestVerificationToken=" + $('input[name="__RequestVerificationToken"]').val(),
                 type: "POST",
                 url: '/User/AddOrUpdateReadBook',
                 success: function (res) {

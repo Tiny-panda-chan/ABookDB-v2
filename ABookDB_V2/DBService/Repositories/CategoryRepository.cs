@@ -23,7 +23,9 @@ namespace DBService.Repositories
 
         public async Task<IEnumerable<BookModel>> GetAllBooksInCategory(CategoryModel model)
         {
-            return await _context.Books.Include(u => u.Categories).SkipWhile(ec => ec.Categories.IsNullOrEmpty()).Where(b => b.Categories.Any(c => c == model)).ToListAsync();
+            await _context.Entry(model).Collection(c => c.Books).LoadAsync();
+            return model.Books.ToList();
+            //return await _context.Books.Include(u => u.Categories).Where(b => b.Categories.Any(c => c == model)).ToListAsync();
         }
 
         public async Task<CategoryModel?> GetByNameAsync(string name)

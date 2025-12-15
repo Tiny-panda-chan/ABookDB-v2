@@ -13,6 +13,7 @@
         }
     }
 }
+@Html.AntiForgeryToken()
 
 <h1>Index</h1>
 <hr />
@@ -114,7 +115,7 @@
                                 <a asp-controller="Book" asp-action="Edit" asp-route-id="@item.Id.ToString()">
                                     Edit
                                 </a>
-                                <a asp-controller="Book" asp-action="Delete" asp-route-id="@item.Id.ToString()">
+                                <a onclick="deleteBook(@item.Id.ToString())" >
                                     Delete
                                 </a>
                             }
@@ -133,5 +134,18 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
+
+        function deleteBook(bookId) {
+                $.ajax({
+                    type: "get",
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]').val())
+                    },
+                    url: "/Book/Delete?id=" + bookId /*+ "&__RequestVerificationToken=" + $('input[name="__RequestVerificationToken"]').val()*/,
+                    success: function( result ) {
+                        window.location.href = '@Url.Action("Index", "Book")'
+                    }
+                });
+        }
     </script>
 }

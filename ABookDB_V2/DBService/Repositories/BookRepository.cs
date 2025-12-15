@@ -32,7 +32,15 @@ namespace DBService.Repositories
 
         public async Task<IEnumerable<BookModel>> GetAllAsyncByCategories(List<string> searchCategories)
         {
-            return await _context.Books.Include(u => u.CreatedBy).Include(c => c.Categories).Include(a => a.Author).Where(b => !b.Categories.IsNullOrEmpty() ? b.Categories.Any(c => searchCategories.Contains(c.Name)) : false).ToListAsync();
+            CategoryRepository cr = new CategoryRepository(_context);
+            var catBooks = new List<BookModel>();
+            foreach (var category in searchCategories)
+            {
+                var cat = await cr.GetByNameAsync(category);
+                if (cat != null)
+                    catBooks.AddRange(await cr.GetAllBooksInCategory(cat));
+            }
+            return catBooks;
         }
 
         public async Task<IEnumerable<CategoryModel>?> GetAllCategoriesAsync(BookModel model)

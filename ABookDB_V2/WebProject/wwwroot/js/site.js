@@ -3,6 +3,12 @@
 
 // Write your JavaScript code.
 
+function gettoken() {
+token = $(token).val();
+return token;
+}
+
+
 //nice multiselect
 var style = document.createElement('style');
 style.setAttribute("id", "multiselect_dropdown_styles");

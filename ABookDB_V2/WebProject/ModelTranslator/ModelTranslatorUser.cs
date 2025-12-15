@@ -10,7 +10,7 @@ using WebProject.ViewModels.User;
 
 namespace WebProject.ModelTranslator
 {
-    public class ModelTranslatorUser(ABookDBContext _context,
+    public class ModelTranslatorUser(
         IHttpContextAccessor _httpContextAccesor,
         IUserRepository _userRepository,
         IBookRepository _bookRepository) : ModelTranslatorParent(_httpContextAccesor, _userRepository), IModelTranslatorUser

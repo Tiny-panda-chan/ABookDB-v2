@@ -65,10 +65,13 @@ namespace WebProject.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditVM editVM)
+        public async Task<IActionResult> Edit(EditVM editVM, int? EditId)
         {
+            if (EditId  == null)
+                throw new NotSupportedException();
+            editVM._id = EditId.Value;
             await _translator.SaveObjectAsync(editVM);
-            return View();
+            return RedirectToAction(nameof(Detail), new { id = EditId });
         }
 
         [Authorize]
@@ -100,7 +103,7 @@ namespace WebProject.Controllers
         }
 
         [Authorize]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Download(int bookId, string fileName)
         {
             DownloadFileVM dfvm = await _translator.FillObjectAsync(bookId, new DownloadFileVM() { FileName = fileName });

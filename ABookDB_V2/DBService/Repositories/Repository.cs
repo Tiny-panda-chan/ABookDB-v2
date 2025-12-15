@@ -17,7 +17,7 @@ namespace DBService.Repositories
             _context = context;
         }
 
-        public bool? Add(TEntity entity)
+        public virtual bool? Add(TEntity entity)
         {
             if (_context.Set<TEntity>().Any(e => e == entity))
                 return false;

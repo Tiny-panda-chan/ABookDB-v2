@@ -33,7 +33,7 @@ namespace WebProject.Controllers
         public async Task<IActionResult> ChangeEmail(ProfileVM profileVM)
         {
             var res = await _translator.SaveObjectAsync(profileVM);
-            return View("Profile");
+            return View(nameof(Profile));
         }
         [Authorize]
         [HttpPost]
@@ -41,7 +41,7 @@ namespace WebProject.Controllers
         public async Task<IActionResult> ChangePassword(ProfileVM profileVM)
         {
             var res = await _translator.SaveObjectAsync(profileVM);
-            return View("Profile");
+            return View(nameof(Profile));
         }
 
         [HttpGet]
@@ -55,7 +55,7 @@ namespace WebProject.Controllers
         public async Task<IActionResult> Register(RegisterVM registerVM)
         {
             await _auth.RegisterUserAsync(HttpContext, registerVM);
-            return RedirectToAction("Index", "Book");
+            return RedirectToAction(nameof(BookController.Index), "Book");
         }
 
         [HttpGet]
@@ -71,7 +71,7 @@ namespace WebProject.Controllers
             var sucLogin = await _auth.LoginUser(HttpContext, loginVM);
             if (sucLogin.Value)
             {
-                return RedirectToAction("Index", "Book");
+                return RedirectToAction(nameof(BookController.Index), "Book");
             }
             else
             {
@@ -83,7 +83,7 @@ namespace WebProject.Controllers
         public async Task<IActionResult> LogOut()
         {
             await HttpContext.SignOutAsync(ConstanceHelper.AuthCookie);
-            return RedirectToAction("Index", "Book");
+            return RedirectToAction(nameof(BookController.Index), "Book");
         }
 
         [Authorize]
@@ -101,7 +101,7 @@ namespace WebProject.Controllers
                 if (!res)
                     return BadRequest();
             }
-            return RedirectToAction(nameof(BookController.Detail), nameof(BookController), new { id = bookId });
+            return RedirectToAction(nameof(BookController.Detail), "Book", new { id = bookId });
         }
 
 

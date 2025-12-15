@@ -21,25 +21,27 @@ namespace WebProject
                 x => x.MigrationsAssembly("DBService")));
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddAntiforgery(o => { o.HeaderName = "__requestverificationtoken"; });
             builder.Services.AddHttpContextAccessor();
 
-            builder.Services.AddScoped<IModelTranslatorBook, ModelTranslator.ModelTranslatorBook>();
-            builder.Services.AddScoped<IModelTranslatorUser, ModelTranslator.ModelTranslatorUser>();
-            builder.Services.AddScoped<IModelTranslatorCategory, ModelTranslator.ModelTranslatorCategory>();
-            builder.Services.AddScoped<IModelTranslatorReview, ModelTranslator.ModelTranslatorReview>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-            builder.Services.AddScoped<IBookRepository, BookRepository>();
-            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-            builder.Services.AddScoped<IUrlRepository, UrlRepository>();
-            builder.Services.AddScoped<IAuthHelper, AuthHelper>();
+            builder.Services.AddTransient<IModelTranslatorBook, ModelTranslator.ModelTranslatorBook>();
+            builder.Services.AddTransient<IModelTranslatorUser, ModelTranslator.ModelTranslatorUser>();
+            builder.Services.AddTransient<IModelTranslatorCategory, ModelTranslator.ModelTranslatorCategory>();
+            builder.Services.AddTransient<IModelTranslatorReview, ModelTranslator.ModelTranslatorReview>();
+            builder.Services.AddTransient<IUserRepository, UserRepository>();
+            builder.Services.AddTransient<IAuthorRepository, AuthorRepository>();
+            builder.Services.AddTransient<IBookRepository, BookRepository>();
+            builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
+            builder.Services.AddTransient<IUrlRepository, UrlRepository>();
+            builder.Services.AddTransient<IFileRepository, FileRepository>();
+            builder.Services.AddTransient<IAuthHelper, AuthHelper>();
             /*builder.Services.AddAutoMapper(configuration =>
             {
                 configuration.CreateMap<BookModel, DetailVM>();
                 configuration.CreateMap<BookModel, EditVM>();
             });*/
-            //builder.Services.AddScoped<IStatusService, StatusService>();
+            //builder.Services.AddTransient<IStatusService, StatusService>();
 
             builder.Services.AddAuthentication().AddCookie(ConstanceHelper.AuthCookie, o =>
             {

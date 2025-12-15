@@ -7,7 +7,7 @@ using WebProject.ViewModels.Review;
 
 namespace WebProject.ModelTranslator
 {
-    public class ModelTranslatorReview(ABookDBContext _context,
+    public class ModelTranslatorReview(
         IHttpContextAccessor _httpContextAccesor,
         IBookRepository _bookRepository,
         IUserRepository _userRepository,
@@ -22,7 +22,7 @@ namespace WebProject.ModelTranslator
             await _bookRepository.GetAllReviewsAsync(bk);
             if (bk.Reviews == null)
                 return new ListVM(0);
-            obj.ReviewItems = bk.Reviews.Select(c => new ListVM.ReviewItem() { TextContent = c.Text, CreatedBy = c.createdBy.Username, CreatedOn = c.createdOn }).ToList();
+            obj.ReviewItems = bk.Reviews.Select(c => new ListVM.ReviewItem() { TextContent = c.text, CreatedBy = c.createdBy.Username, CreatedOn = c.createdOn }).ToList();
             return obj;
         }
 
@@ -32,7 +32,7 @@ namespace WebProject.ModelTranslator
             if (bk == null)
                 return 0;
             UserModel user = await GetUser();
-            ReviewModel rm = new ReviewModel() { createdOn = DateTime.Now, Text = obj.Text, book = bk, createdBy = user };
+            ReviewModel rm = new ReviewModel() { createdOn = DateTime.Now, text = obj.Text, book = bk, createdBy = user };
 
             _reviewRepository.Add(rm);
             return rm.Id;

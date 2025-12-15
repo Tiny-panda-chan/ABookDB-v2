@@ -6,7 +6,7 @@ using WebProject.Helpers;
 
 namespace WebProject.ModelTranslator
 {
-    public class ModelTranslatorCategory(ABookDBContext _context,
+    public class ModelTranslatorCategory(
         IHttpContextAccessor _httpContextAccesor,
         IUserRepository _userRepository,
         ICategoryRepository _categoryRepository) : ModelTranslatorParent(_httpContextAccesor, _userRepository), IModelTranslatorCategory

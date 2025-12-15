@@ -9,6 +9,7 @@ namespace Models.Models
     {
         [Key]
         public int Id { get; set; }
+        public BookModel book { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]

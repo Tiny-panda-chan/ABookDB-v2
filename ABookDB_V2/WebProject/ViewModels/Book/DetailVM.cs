@@ -17,7 +17,13 @@ namespace WebProject.ViewModels.Book
         public DateTime CreatedDate { get; set; }
         public List<string> BookCategories { get; set; }
         public List<string> BookFiles { get; set; }
-        public List<string> BookUrls { get; set; }
+        public List<Url> BookUrls { get; set; }
+
+        public struct Url
+        {
+            public string UrlAddress { get; set; }
+            public bool IsWorking { get; set; }
+        }
 
         //public List<ReviewItem> BookReviews { get; set; }
         //public struct ReviewItem

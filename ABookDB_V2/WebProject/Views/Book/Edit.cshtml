@@ -8,6 +8,7 @@
 <hr />
 <div class="container">
     <form asp-action="Edit" enctype="multipart/form-data" id="formdata">
+        <input name="EditId" value="@Model._id" hidden/>
         <div class="row">
             <div class="col-4">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -67,7 +68,12 @@
                 <h4>File:</h4>
             </div>
             <div class="col">
-                <div class="form-group">
+                <div id="existingFile" class="row">
+                    <div class="col"><p>@Model.BookFile</p></div>
+                    <div class="col"><input onclick="showUploadFile()" class="btn btn-secondary" value="Remove"/></div>
+                    
+                </div>
+                <div id="uploadFile" class="form-group" style="display: none">
                     <input asp-for="UploadedFiles" class="form-control" type="file" accept=".pdf, .epub, .txt" />
                 </div>
             </div>
@@ -100,6 +106,13 @@
             if (input.value.length === 0) {
                 mirror.innerText = "Name of the book"
             }
+        }
+
+        function showUploadFile() {
+            var ef = document.getElementById('existingFile');
+            var uf = document.getElementById('uploadFile');
+            ef.style.display = "none";
+            uf.style.display = "block";
         }
 
     </script>
